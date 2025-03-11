@@ -42,6 +42,7 @@ public class ProfileView {
     private void changeStatus(boolean ownProfile, Scanner scanner, Profile profile){
         if(ownProfile){
             System.out.println("Introduzca o novo estado");
+            String newState = scanner.nextLine();
 //            profileController.updateProfileStatus;
         }
     }
