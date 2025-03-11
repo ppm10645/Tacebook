@@ -11,6 +11,14 @@ package modelo;
 public class Profile {
     private String name, password, status;
 
+    public Profile(String name, String password, String status) {
+        this.name = name;
+        this.password = password;
+        this.status = status;
+    }
+
+    
+    
     public String getName() {
         return name;
     }
