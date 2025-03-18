@@ -41,48 +41,49 @@ public class InitMenuView {
 
                 case "3":
                     System.out.println("Saindo da aplicacion");
-                    return false;
+                    return true;
             }
         }
 
     }
-    
+
     /**
-     * Mensaxe de error en caso de que o usuario ou o contrasinal sexan incorrectos
+     * Mensaxe de error en caso de que o usuario ou o contrasinal sexan
+     * incorrectos
      */
-    public void showLoginErrorMessage(){
+    public void showLoginErrorMessage() {
         System.out.println("Error, o usuario ou o contrasinal son incorrectos");
     }
-    
+
     /**
      * Menu para rexistrar un usuario
      */
-    public void showRegisterMenu(){
+    public void showRegisterMenu() {
         System.out.println("Introduzca o nome de usuario");
         String name = scanner.nextLine();
-        
-        while(true){
-        System.out.println("Introduzca o contrasinal");
-        String contrasinal = scanner.nextLine();
-        System.out.println("Introduzca de novo o contrasinal");
-        String repcontrasinal = scanner.nextLine();
-        if(repcontrasinal != contrasinal){
-            System.out.println("O contrasinal non coincide");
-        } else {
-            System.out.println("Rexistrouse correctamente o usuario");
-            break;
-        }
-        
-        System.out.println("Introduzca o estado");
-        String estado = scanner.nextLine();
+
+        while (true) {
+            System.out.println("Introduzca o contrasinal");
+            String contrasinal = scanner.nextLine();
+            System.out.println("Introduzca de novo o contrasinal");
+            String repcontrasinal = scanner.nextLine();
+            if (repcontrasinal != contrasinal) {
+                System.out.println("O contrasinal non coincide");
+            } else {
+                System.out.println("Rexistrouse correctamente o usuario");
+                break;
+            }
+
+            System.out.println("Introduzca o estado");
+            String estado = scanner.nextLine();
         }
 //        initMenuController.createProfile;
     }
-    
-    public String showNewNameMenu(){
+
+    public String showNewNameMenu() {
         System.out.println("O nome de usuario xa está en uso, introduzca un novo nome de usuario");
         String name = scanner.nextLine();
-        
+
         return name;
     }
 }
