@@ -5,7 +5,9 @@
 package controlador;
 
 import modelo.Profile;
+import persistencia.ProfileDB;
 import vista.InitMenuView;
+
 
 /**
  *
@@ -13,17 +15,20 @@ import vista.InitMenuView;
  */
 public class InitMenuController {
 
-    private InitMenuView initMenuView;
+    private InitMenuView initMenuView = new InitMenuView(this);
 
     private void init() {
-
-        if (initMenuView.showLoginMenu() == false) {
-            initMenuView.showLoginMenu();
-        }
+        while(!initMenuView.showLoginMenu());
     }
 
     public void login(String name, String password) {
-
+           Profile profile = ProfileDB.findBuNameAdnPassword(name, password, 0); //Busca si existe un perfil con ese nombre y contraseña
+           
+           if(profile == null){
+               initMenuView.showLoginErrorMessage();
+           } else {
+               //crea perfil da clase ProfileController, pendiente de crear
+           }
     }
     
     public void register(){
@@ -31,11 +36,19 @@ public class InitMenuController {
     }
     
     public void createProfile(String name, String password, String status){
+        Profile profile = ProfileDB.findByName(name, 0); //
         
-        Profile newprofile = new Profile(name, password,status);
+        while(profile != null){
+            initMenuView.showNewNameMenu();
+        }
+            Profile newprofile = new Profile(name, password,status);
+            
+        
+    }
     
     public static void main(String[] args) {
-            
+            InitMenuController controller = new InitMenuController();
+            controller.init();
     }
 
 }

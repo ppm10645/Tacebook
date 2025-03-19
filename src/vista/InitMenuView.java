@@ -22,30 +22,35 @@ public class InitMenuView {
     }
 
     public boolean showLoginMenu() {
-        while (true) {
             System.out.println("Escolle unha opción:");
             System.out.println("1. Iniciar sesión");
             System.out.println("2. Crear un novo perfil");
             System.out.println("3. Saír da aplicación");
 
-            String option = scanner.nextLine();
+            String usname,uspassword;
+            int option = scanner.nextInt();
+            
 
-            switch (option) {
-                case "1":
-//                initMenuController.login();
-                    System.out.println("Login");
-
-                case "2":
-//                    initMenuController.register();
-                    System.out.println("Register");
-
-                case "3":
-                    System.out.println("Saindo da aplicacion");
-                    return true;
+            if (option == 1) {
+                System.out.println("Escriba o nome de usuario");
+                usname = scanner.nextLine();
+                System.out.println("Escriba o  contrasinal");
+                uspassword = scanner.nextLine();
+                initMenuController.login(usname, uspassword);
+                return false;
+            } else if (option == 2) {
+                initMenuController.register();
+                return false;
+            } else if (option == 3) {
+                System.out.println("Saindo da aplicacion");
+                return true;
+            } else {
+                System.out.println("Escolla algunha das opcións disponibles");
+                return false;
             }
         }
 
-    }
+    
 
     /**
      * Mensaxe de error en caso de que o usuario ou o contrasinal sexan
