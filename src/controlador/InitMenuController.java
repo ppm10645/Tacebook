@@ -16,18 +16,19 @@ import vista.InitMenuView;
 public class InitMenuController {
 
     private InitMenuView initMenuView = new InitMenuView(this);
+    private ProfileController profilecontroller = new ProfileController();
 
     private void init() {
         while(!initMenuView.showLoginMenu());
     }
 
     public void login(String name, String password) {
-           Profile profile = ProfileDB.findBuNameAdnPassword(name, password, 0); //Busca si existe un perfil con ese nombre y contraseña
+            Profile profile = ProfileDB.findBuNameAdnPassword(name, password, 0);
            
            if(profile == null){
                initMenuView.showLoginErrorMessage();
            } else {
-               //crea perfil da clase ProfileController, pendiente de crear
+               profilecontroller.openSession(profile);
            }
     }
     
@@ -42,8 +43,7 @@ public class InitMenuController {
             initMenuView.showNewNameMenu();
         }
             Profile newprofile = new Profile(name, password,status);
-            
-        
+            profilecontroller.openSession(newprofile);
     }
     
     public static void main(String[] args) {

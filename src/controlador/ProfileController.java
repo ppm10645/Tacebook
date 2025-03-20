@@ -39,6 +39,10 @@ public class ProfileController {
      */
     public void openSession(Profile sessionProfile){
         this.sessionProfile = sessionProfile;
+        
+        if(this.profileView == null) {
+            this.profileView = new ProfileView();
+        }
         profileView.showProfileMenu(sessionProfile);
     }
     
