@@ -23,7 +23,7 @@ public class InitMenuController {
     }
 
     public void login(String name, String password) {
-            Profile profile = ProfileDB.findBuNameAdnPassword(name, password, 0);
+            Profile profile = ProfileDB.findBuNameAdnPassword(name, password, 10);
            
            if(profile == null){
                initMenuView.showLoginErrorMessage();
@@ -37,12 +37,13 @@ public class InitMenuController {
     }
     
     public void createProfile(String name, String password, String status){
-        Profile profile = ProfileDB.findByName(name, 0); //
         
-        while(profile != null){
-            initMenuView.showNewNameMenu();
+        while(ProfileDB.findByName(name, 10) != null){
+            name = initMenuView.showNewNameMenu();
         }
             Profile newprofile = new Profile(name, password,status);
+            ProfileDB.save(newprofile);
+            ProfileController profileController = new ProfileController();
             profilecontroller.openSession(newprofile);
     }
     
