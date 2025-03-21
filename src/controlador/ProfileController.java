@@ -17,6 +17,10 @@ public class ProfileController {
     private ProfileView profileView;
     private Profile sessionProfile;
     
+    public ProfileController(){
+        profileView = new ProfileView();
+    }
+    
     /**
      * Obten o numero de publicacións a mostrar
      * @return 
