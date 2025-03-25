@@ -18,7 +18,7 @@ public class ProfileController {
     private Profile sessionProfile;
     
     public ProfileController(){
-        profileView = new ProfileView();
+        this.profileView = new ProfileView(this);
     }
     
     /**
@@ -45,7 +45,7 @@ public class ProfileController {
         this.sessionProfile = sessionProfile;
         
         if(this.profileView == null) {
-            this.profileView = new ProfileView();
+            this.profileView = new ProfileView(this);
         }
         profileView.showProfileMenu(sessionProfile);
     }

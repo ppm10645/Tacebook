@@ -18,11 +18,10 @@ public class ProfileView {
     private ProfileController profileController;
     private Scanner scanner;
 
-    public ProfileView() {
+    public ProfileView(ProfileController profileController) {
         this.scanner = new Scanner(System.in);
+        this.profileController = profileController;
     }
-    
-    
 
     public int getPostsShowed() {
         return postsShowed;
@@ -35,8 +34,8 @@ public class ProfileView {
      * @param profile
      */
     private void showProfileInfo(boolean ownProfile, Profile profile) {
-            System.out.println("tacebook - Perfil do usuario: " + profile.getName());
-            System.out.println("Estado actual: " + profile.getStatus());
+        System.out.println("tacebook - Perfil do usuario: " + profile.getName());
+        System.out.println("Estado actual: " + profile.getStatus());
     }
 
     /**
@@ -64,27 +63,33 @@ public class ProfileView {
      * @param profile
      */
     public void showProfileMenu(Profile profile) {
-
         showProfileInfo(true, profile);
 
-        while (true) {
-            System.out.println("");
-            System.out.println("1. Cambiar estado do perfil");
-            System.out.println("2. Pechar sesion");
-            System.out.println("Elixe unha opción: ");
-            int option = scanner.nextInt();
-            scanner.nextLine();
+        //while (true) {
+        System.out.println("");
+        System.out.println("1. Cambiar estado do perfil");
+        System.out.println("2. Pechar sesión");
+        System.out.println("Elixe unha opción: ");
 
-            switch (option) {
-                case 1:
-                    changeStatus(true, scanner, profile);
-                    break;
-                case 2:
-                    System.out.println("Saindo do perfil");
-                    return;
-                default:
-                    System.out.println("Optión non valida");
-            }
+        String input = scanner.nextLine(); // Leer entrada como String  
+        int option;
+        try {
+            option = Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            option = -1; // Manejo de error  
         }
+
+        switch (option) {
+            case 1:
+                changeStatus(true, scanner, profile);
+                break;
+            case 2:
+                System.out.println("Saíndo do perfil");
+                return;
+            default:
+                System.out.println("Opción non válida");
+        }
+        //}
     }
+
 }
