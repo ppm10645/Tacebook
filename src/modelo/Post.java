@@ -4,6 +4,7 @@
  */
 package modelo;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -14,6 +15,21 @@ public class Post {
     private int id;
     private Date date;
     private String text;
+    private Profile profile;
+    private Profile author;
+    private ArrayList<Profile> profileLikes;
+    private ArrayList<Comment> comments;
+    
+    
+
+    public Post(Date date, String text, Profile profile) {
+        this.date = date;
+        this.text = text;
+        this.profileLikes = new ArrayList<>();
+        this.comments = new ArrayList<>();
+    }
+    
+    
 
     public int getId() {
         return id;
@@ -38,6 +54,40 @@ public class Post {
     public void setText(String text) {
         this.text = text;
     }
+
+    public Profile getProfile() {
+        return profile;
+    }
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
+    }
+
+    public Profile getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(Profile author) {
+        this.author = author;
+    }
+
+    public ArrayList<Profile> getProfileLikes() {
+        return profileLikes;
+    }
+
+    public void setProfileLikes(ArrayList<Profile> profileLikes) {
+        this.profileLikes = profileLikes;
+    }
+
+    public ArrayList<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(ArrayList<Comment> comments) {
+        this.comments = comments;
+    }
+    
+    
     
     
 }

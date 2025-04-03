@@ -14,6 +14,15 @@ public class Comment {
     private int id;
     private Date date;
     private String text;
+    private Post post;
+    private Profile sourceProfile;
+
+    public Comment(Post post, String text) {
+        this.post = post;
+        this.text = text;
+    }
+    
+    
 
     public int getId() {
         return id;
@@ -38,6 +47,23 @@ public class Comment {
     public void setText(String text) {
         this.text = text;
     }
+
+    public Post getPost() {
+        return post;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
+    }
+
+    public Profile getSourceProfile() {
+        return sourceProfile;
+    }
+
+    public void setSourceProfile(Profile sourceProfile) {
+        this.sourceProfile = sourceProfile;
+    }
+    
     
     
 }

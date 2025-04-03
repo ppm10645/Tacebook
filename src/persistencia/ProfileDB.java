@@ -4,6 +4,7 @@
  */
 package persistencia;
 
+import java.util.ArrayList;
 import modelo.Profile;
 
 /**
@@ -12,6 +13,8 @@ import modelo.Profile;
  */
 public class ProfileDB {
 
+    private ArrayList<Profile> profiles = new ArrayList<>();
+    
     /**
      * Recupera un perfil buscando polo nome e devolvendo o obxeto
      *
@@ -59,29 +62,30 @@ public class ProfileDB {
     }
     
     /**
-     * Almacena unha nova solicitude de amizade
-     * @param destProfile
-     * @param sourceProfile 
+     * Añade una nueva solicitud de amistad
+     * @param destProfile usuario destino de la solicitud
+     * @param sourceProfile usuario de la solicitud
      */
     public static void saveFrienshipRequest(Profile destProfile, Profile sourceProfile) {
-        
+            destProfile.getFriendRequests().add(sourceProfile);
     }
     
     /**
      * Borra unha solicitude de amizade entre dous perfis
-     * @param destProfile
-     * @param sourceProfile 
+     * @param destProfile usuario que quere borrar a solicitude
+     * @param sourceProfile usuario que se quere borrar a solicitude
      */
     public static void removeFrienshipRequest(Profile destProfile, Profile sourceProfile) {
-        
+        destProfile.getFriendRequests().remove(sourceProfile);
     }
     
     /**
-     * Almacena unha amizade entre dous perfis
+     * Almacena unha amizade entre dous perfis e elimina a solicitude (Tengo que eliminar la solicitud?)
      * @param profile1
      * @param profile2 
      */
     public static void saveFriendship(Profile profile1, Profile profile2) {
-        
+        profile1.getFriends().add(profile2);
+        profile2.getFriends().add(profile1);
     }
 }

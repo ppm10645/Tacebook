@@ -17,7 +17,7 @@ public class MessageDB {
      * @param message 
      */
     public static void save(Message message) {
-        
+        message.getDestProfile().getMessages().add(0,message);
     }
     
     /**
@@ -33,6 +33,6 @@ public class MessageDB {
      * @param message 
      */
     public static void remove(Message message) {
-        
+        message.getDestProfile().getMessages().remove(message);
     }
 }

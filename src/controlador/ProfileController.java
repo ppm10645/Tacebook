@@ -4,7 +4,11 @@
  */
 package controlador;
 
+import modelo.Comment;
+import modelo.Post;
 import modelo.Profile;
+import persistencia.CommentDB;
+import persistencia.PostDB;
 import persistencia.ProfileDB;
 import vista.ProfileView;
 
@@ -16,9 +20,20 @@ public class ProfileController {
     
     private ProfileView profileView;
     private Profile sessionProfile;
+    private Profile shownProfile;
     
     public ProfileController(){
         this.profileView = new ProfileView(this);
+        this.shownProfile = sessionProfile;
+    }
+    
+        public Profile getShownProfile() {
+        return shownProfile;
+    }
+
+    public void setShownProfile(Profile shownProfile) {
+        this.shownProfile = shownProfile;
+        reloadProfile();
     }
     
     /**
@@ -33,8 +48,8 @@ public class ProfileController {
      * Mostra o menu do perfil 
      */
     public void reloadProfile(){
-        sessionProfile =  ProfileDB.findByName(sessionProfile.getName(), getPostsShowed()); //Busca el perfil con el mismo nombre
-        profileView.showProfileMenu(sessionProfile); //Muestra el perfil seleccionado
+        // Precisamente neste método "reloadProfile" cambiaremos o código para que en lugar de almacenar o perfil no atributo
+        // "sessionProfile" o garde no atributo "shownProfile", e sexa ese atributo o que se lle pase ao obxecto da vista
     }
     
     /**
@@ -50,9 +65,61 @@ public class ProfileController {
         profileView.showProfileMenu(sessionProfile);
     }
     
+    /**
+     * Actualiza o estatus do perfil
+     * @param newStatus 
+     */
     public void updateProfileStatus(String newStatus){
         sessionProfile.setStatus(newStatus);
         ProfileDB.update(sessionProfile);
         reloadProfile();
     }
+    
+    /**
+     * Crea un novo post
+     * @param text
+     * @param destProfile 
+     */
+    public void newPost(String text, Profile destProfile){
+        Post mypost = new Post(null,text,destProfile);
+        
+        PostDB.save(mypost);
+        reloadProfile();
+    }
+    
+    /**
+     * Crea un novo comentario
+     * @param post
+     * @param commentText 
+     */
+    public void newComment(Post post, String commentText){
+        Comment mycomment = new Comment(post, commentText);
+        
+        CommentDB.save(mycomment);
+        reloadProfile();
+    }
+    
+    /**
+     * Añade un like a un post
+     * @param post 
+     */
+    public void newLike(Post post){
+        if(!post.getAuthor().getName().equals(sessionProfile.getName()) && !post.getProfileLikes().contains(post.getProfile())){
+            post.getProfileLikes().add(sessionProfile);
+        } 
+        reloadProfile();
+    }
+    
+    public void newFriendshipRequest(String profileName){
+        if(!sessionProfile.getFriendRequests().contains(ProfileDB.findByName(profileName, 0))){
+            ProfileDB.saveFrienshipRequest(sessionProfile, ProfileDB.findByName(profileName, 0));
+        } 
+        reloadProfile();
+    }
+    
+    public void acceptFriendshipRequest(Profile sourceProfile){
+        
+    }
+    
+    
 }

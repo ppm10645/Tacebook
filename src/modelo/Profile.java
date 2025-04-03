@@ -4,17 +4,29 @@
  */
 package modelo;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author joao.pedro.pereira
  */
 public class Profile {
     private String name, password, status;
+    
+    private ArrayList<Post> posts; 
+    
+    private ArrayList<Message> messages;
+    
+    private ArrayList<Profile> friends;
+    private ArrayList<Profile> friendRequests;
 
     public Profile(String name, String password, String status) {
         this.name = name;
         this.password = password;
         this.status = status;
+        this.friends = new ArrayList<>();
+        this.friendRequests = new ArrayList<>();
+        this.messages = new ArrayList<>();
     }
 
     
@@ -42,6 +54,40 @@ public class Profile {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public ArrayList<Profile> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(ArrayList<Profile> friends) {
+        this.friends = friends;
+    }
+
+    public ArrayList<Profile> getFriendRequests() {
+        return friendRequests;
+    }
+
+    public void setFriendRequests(ArrayList<Profile> friendRequests) {
+        this.friendRequests = friendRequests;
+    }
+
+    public ArrayList<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(ArrayList<Post> posts) {
+        this.posts = posts;
+    }
+
+    public ArrayList<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(ArrayList<Message> messages) {
+        this.messages = messages;
+    }
+    
+    
     
     
 }

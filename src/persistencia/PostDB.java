@@ -4,6 +4,7 @@
  */
 package persistencia;
 
+import java.util.ArrayList;
 import modelo.Post;
 import modelo.Profile;
 
@@ -11,14 +12,15 @@ import modelo.Profile;
  *
  * @author joao.pedro.pereira
  */
-public class PostDB {
+public class PostDB {   
     
     /**
-     * Almacena unha nova publicación
+     * Almacena unha nova publicación 
      * @param post 
      */
     public static void save(Post post) {
-        
+        Profile p = post.getProfile();
+        p.getPosts().add(0, post);
     }
     
     /**
@@ -27,7 +29,7 @@ public class PostDB {
      * @param profile 
      */
     public static void saveLike(Post post, Profile profile) {
-        
+        post.getProfileLikes().add(profile);
     }
     
 }

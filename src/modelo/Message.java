@@ -15,6 +15,8 @@ public class Message {
     private String text;
     private Date date;
     private boolean read;
+    private Profile destProfile;
+    private Profile sourceProfile;
 
     public int getId() {
         return id;
@@ -47,6 +49,23 @@ public class Message {
     public void setRead(boolean read) {
         this.read = read;
     }
+
+    public Profile getDestProfile() {
+        return destProfile;
+    }
+
+    public void setDestProfile(Profile destProfile) {
+        this.destProfile = destProfile;
+    }
+
+    public Profile getSourceProfile() {
+        return sourceProfile;
+    }
+
+    public void setSourceProfile(Profile sourceProfile) {
+        this.sourceProfile = sourceProfile;
+    }
+    
     
     
 }
