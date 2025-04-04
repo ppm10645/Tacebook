@@ -7,7 +7,7 @@ package controlador;
 import modelo.Profile;
 import persistencia.ProfileDB;
 import vista.InitMenuView;
-
+import controlador.ProfileController;
 
 /**
  *
@@ -16,40 +16,41 @@ import vista.InitMenuView;
 public class InitMenuController {
 
     private InitMenuView initMenuView = new InitMenuView(this);
-    private ProfileController profilecontroller = new ProfileController();
 
     private void init() {
-        while(!initMenuView.showLoginMenu());
+        while (!initMenuView.showLoginMenu());
     }
 
     public void login(String name, String password) {
-            Profile profile = ProfileDB.findBuNameAdnPassword(name, password, 10);
-           
-           if(profile == null){
-               initMenuView.showLoginErrorMessage();
-           } else {
-               profilecontroller.openSession(profile);
-           }
+        ProfileController profile = ProfileDB.findBuNameAdnPassword(name, password, 10);
+
+        if (profile == null) {
+            initMenuView.showLoginErrorMessage();
+        } else {
+            profilecontroller.openSession(profile);
+        }
     }
-    
-    public void register(){
+
+    public void register() {
         initMenuView.showRegisterMenu();
     }
-    
-    public void createProfile(String name, String password, String status){
-        
-        while(ProfileDB.findByName(name, 10) != null){
+
+    public void createProfile(String name, String password, String status) {
+        // Comprobamos que el nome no este usado
+        while (ProfileDB.findByName(name, 0) != null) {
             name = initMenuView.showNewNameMenu();
         }
-            Profile newprofile = new Profile(name, password,status);
-            ProfileDB.save(newprofile);
-            ProfileController profileController = new ProfileController();
-            profilecontroller.openSession(newprofile);
+        // Creamos el objeto para el nuevo perfil y lo guardamos
+        Profile newprofile = new Profile(name, password, status);
+        ProfileDB.save(newprofile);
+        // Creamos el controlador de la sesion con ese perfil
+        ProfileController profilecontroller = new ProfileController();
+        profilecontroller.openSession(newprofile);
     }
-    
+
     public static void main(String[] args) {
-            InitMenuController controller = new InitMenuController();
-            controller.init();
+        InitMenuController controller = new InitMenuController();
+        controller.init();
     }
 
 }
