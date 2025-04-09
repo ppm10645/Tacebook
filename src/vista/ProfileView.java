@@ -7,6 +7,8 @@ package vista;
 import controlador.ProfileController;
 import java.text.SimpleDateFormat;
 import java.util.Scanner;
+import modelo.Comment;
+import modelo.Post;
 import modelo.Profile;
 
 /**
@@ -40,10 +42,14 @@ public class ProfileView {
         System.out.println("tacebook - Perfil do usuario: " + profile.getName());
         //Mostra o estato do usuario
         System.out.println("Estado actual: " + profile.getStatus());
-        //Mostra as publicacions do usuario
-        System.out.println("Publicacions: " + profile.getPosts());
-        //Mostra os comentario do usuario
-        System.out.println("Comentarios: " + profile.getComments());
+        //Mostra as publicacions do usuario e os comentarios da publicacion
+        for (int i=0; i<profile.getPosts().size(); i++) {
+            System.out.println(i +". " + profile.getPosts().get(i).getText());
+            
+           for (Comment c:profile.getPosts().get(i).getComments()) {
+               System.out.println("- " + c.getText() + " - " + c.getSourceProfile().getName() + " - " + c.getDate().toString());
+           }
+        }
         //Mostra as solicitudes de amizade
         System.out.println("Solicitudes de amizade: " + profile.getFriendRequests());
         //Mostra os amigos
@@ -167,6 +173,52 @@ public class ProfileView {
         String text = scanner.nextLine();
         
         profileController.newPost(text, profile);
+    }
+    
+    /**
+     * Crea un comentario
+     * @param scanner
+     * @param profile 
+     */
+    private void commentPost(Scanner scanner, Profile profile){
+        //Pide selecionar unha publicación
+        String selectiontext = "Selecciona unha publicacion";
+        int postNumber = selectElement(selectiontext, postsShowed, scanner);
+        Post p = profile.getPosts().get(postNumber);
+        
+        
+        //Crea o comentario
+        System.out.println("Que quere comentar: ");
+        String text = scanner.nextLine();
+        profileController.newComment(p, text);
+    }
+    
+    /**
+     * Añade un like
+     * @param scanner
+     * @param profile 
+     */
+    private void addLike(Scanner scanner, Profile profile){
+        //Pide selecionar unha publicación
+        String selectiontext = "Selecciona unha publicacion";
+        int postNumber = selectElement(selectiontext, postsShowed, scanner);
+        Post p = profile.getPosts().get(postNumber);
+        
+        //Añade o like a publicación
+        profileController.newLike(p);
+    }
+    
+    /**
+     * Mostra o perfil dun usuario diferente ao que está mostrando
+     * @param ownProfile
+     * @param scanner
+     * @param profile 
+     */
+    private void showBiography(boolean ownProfile, Scanner scanner, Profile profile){
+        if(ownProfile){
+            System.out.println("Selecciona un amigo para mostrar o seu perfil");
+            
+        }
     }
 
 }
