@@ -54,6 +54,14 @@ public class InitMenuController {
 
     public static void main(String[] args) {
         InitMenuController controller = new InitMenuController();
+        
+        //Usuario temporais para facer as probas
+        Profile user1 = new Profile("pedro", "1", "activo");
+        Profile user2 = new Profile("manolo", "1", "soy un usuario de prueba");
+        
+        ProfileDB.save(user1);
+        ProfileDB.save(user2);
+        
         controller.init();
     }
 

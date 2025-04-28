@@ -18,7 +18,7 @@ import persistencia.ProfileDB;
  */
 public class ProfileView {
 
-    private int postsShowed = 10;
+    private int postsShowed = 1;
     private ProfileController profileController;
     private Scanner scanner;
     private SimpleDateFormat formatter;
@@ -39,24 +39,39 @@ public class ProfileView {
      * @param profile
      */
     private void showProfileInfo(boolean ownProfile, Profile profile) {
-        //Mostra o nome do usuario
-        System.out.println("tacebook - Perfil do usuario: " + profile.getName());
-        //Mostra o estato do usuario
-        System.out.println("Estado actual: " + profile.getStatus());
-        //Mostra as publicacions do usuario e os comentarios da publicacion
-        for (int i = 0; i < profile.getPosts().size(); i++) {
-            System.out.println(i + ". " + profile.getPosts().get(i).getText());
+        if (ownProfile) {
+            //Mostra o nome do usuario
+            System.out.println("tacebook - Perfil do usuario: " + profile.getName());
+            //Mostra o estato do usuario
+            System.out.println("Estado actual: " + profile.getStatus());
+            //Mostra as publicacions do usuario e os comentarios da publicacion
+            System.out.println("A túa biografía (" + postsShowed + " últimas publicacións):");
+            if (profile.getPosts() != null) {
+                for (int i = 0; i < postsShowed; i++) {
+                    System.out.println(i + ". " + profile.getPosts().get(i).getDate().toString() + "ti escriches (" + profile.getPosts().get(i).getProfileLikes() + " me gusta):");
+                    System.out.println(profile.getPosts().get(i).getText());
 
-            for (Comment c : profile.getPosts().get(i).getComments()) {
-                System.out.println("- " + c.getText() + " - " + c.getSourceProfile().getName() + " - " + c.getDate().toString());
+                    for (Comment c : profile.getPosts().get(i).getComments()) {
+                        System.out.println("- " + c.getText() + " - " + c.getSourceProfile().getName() + " - " + c.getDate().toString());
+                    }
+                }
             }
+            //Mostra as amizades
+            System.out.println("Lista de amigos: ");
+            for (int i = 0; i < profile.getFriends().size(); i++) {
+                System.out.println(i + ". " + profile.getFriends().get(i).getName() + " - " + profile.getFriends().get(i).getStatus());
+            }
+
+            if (profile.getFriendRequests().size() >= 1) {
+                //Mostra as solicitudes de amizade
+                System.out.println("Tes solicitude de amizade dos seguintes perfís:");
+                for (int i = 0; i < profile.getFriendRequests().size(); i++) {
+                    System.out.println(i + ". " + profile.getFriendRequests().get(i).getName() + " quere establecer amizade contigo.");
+                }
+            }
+            //Mostra as mensaxes
+            System.out.println("Mensaxes: " + profile.getMessages());
         }
-        //Mostra as solicitudes de amizade
-        System.out.println("Solicitudes de amizade: " + profile.getFriendRequests());
-        //Mostra os amigos
-        System.out.println("Amizades: " + profile.getFriends());
-        //Mostra as mensaxes
-        System.out.println("Mensaxes: " + profile.getMessages());
     }
 
     /**
@@ -84,62 +99,71 @@ public class ProfileView {
      * @param profile
      */
     public void showProfileMenu(Profile profile) {
-        showProfileInfo(true, profile);
+        boolean showprofile = true;
 
-        System.out.println("");
-        System.out.println("1. Escribir unha nova publicación");
-        System.out.println("2. Comentar unha publicación");
-        System.out.println("3. Facer me gusta sobre unha publicacion");
-        System.out.println("4. Ver a biografía dun amigo");
-        System.out.println("5. Enviar unha solicitude de amizade");
-        System.out.println("6. Aceptar unha solicitude de amizade");
-        System.out.println("7. Rexeitar unha solicitude de amizade");
-        System.out.println("8. Enviar unha mensaxe privada a un amigo");
-        System.out.println("9. Ler unha mensaxe privada");
-        System.out.println("10. Eliminar unha mensaxe privada");
-        System.out.println("11. Ver publicacions anteriores");
-        System.out.println("12. Cambiar o estado");
-        System.out.println("13. Pechar sesion");
+        while (showprofile) {
 
-        String input = scanner.nextLine(); // Leer entrada como String  
-        int option;
-        try {
-            option = Integer.parseInt(input);
-        } catch (NumberFormatException e) {
-            option = -1; // Manejo de error  
-        }
+            showProfileInfo(showprofile, profile);
 
-        switch (option) {
-            case 1:
+            System.out.println("");
+            System.out.println("Escolle unha opción:");
+            System.out.println("1. Escribir unha nova publicación");
+            System.out.println("2. Comentar unha publicación");
+            System.out.println("3. Facer me gusta sobre unha publicacion");
+            System.out.println("4. Ver a biografía dun amigo");
+            System.out.println("5. Enviar unha solicitude de amizade");
+            System.out.println("6. Aceptar unha solicitude de amizade");
+            System.out.println("7. Rexeitar unha solicitude de amizade");
+            System.out.println("8. Enviar unha mensaxe privada a un amigo");
+            System.out.println("9. Ler unha mensaxe privada");
+            System.out.println("10. Eliminar unha mensaxe privada");
+            System.out.println("11. Ver publicacions anteriores");
+            System.out.println("12. Cambiar o estado");
+            System.out.println("13. Pechar sesion");
 
-            case 2:
+            String input = scanner.nextLine(); // Leer entrada como String  
+            int option;
+            try {
+                option = Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+                option = -1; // Manejo de error  
+            }
 
-            case 3:
-
-            case 4:
-
-            case 5:
-
-            case 6:
-
-            case 7:
-
-            case 8:
-
-            case 9:
-
-            case 10:
-
-            case 11:
-
-            case 12:
-                changeStatus(true, scanner, profile);
-                break;
-            case 13:
-                System.out.println("Saíndo do perfil");
-                return;
-            default:
-                System.out.println("Opción non válida");
+            switch (option) {
+                case 1:
+                    writeNewPost(scanner, profile);
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+                case 5:
+                    break;
+                case 6:
+                    break;
+                case 7:
+                    break;
+                case 8:
+                    break;
+                case 9:
+                    break;
+                case 10:
+                    break;
+                case 11:
+                    break;
+                case 12:
+                    changeStatus(true, scanner, profile);
+                    break;
+                case 13:
+                    System.out.println("Saíndo do perfil");
+                    showprofile = false;
+                    break;
+                default:
+                    System.out.println("Opción non válida");
+                    break;
+            }
         }
     }
 
@@ -216,7 +240,7 @@ public class ProfileView {
      *
      * @param ownProfile
      * @param scanner
-     * @param profile
+     * @param profile usuario a mostrar
      */
     private void showBiography(boolean ownProfile, Scanner scanner, Profile profile) {
         if (ownProfile) {
@@ -333,7 +357,7 @@ public class ProfileView {
     private void readPrivateMessage(boolean ownProfile, Scanner scanner, Profile profile) {
         System.out.println("Que mensaxe queres ler");
         int messageIndex = scanner.nextInt();
-        for(int i = 0; i < profile.getMessages().size(); i++) {
+        for (int i = 0; i < profile.getMessages().size(); i++) {
             System.out.println(i + ". " + profile.getMessages().get(i).getText());
         }
     }
@@ -347,8 +371,8 @@ public class ProfileView {
      * @param profile
      */
     private void deletePrivateMessage(boolean ownProfile, Scanner scanner, Profile profile) {
-        if(ownProfile) {
-            
+        if (ownProfile) {
+
         }
     }
 

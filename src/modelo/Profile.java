@@ -29,6 +29,7 @@ public class Profile {
         this.friendRequests = new ArrayList<>();
         this.messages = new ArrayList<>();
         this.comments = new ArrayList<>();
+        this.posts= new ArrayList<>();
     }
 
     

@@ -83,7 +83,7 @@ public class ProfileController {
      * @param destProfile 
      */
     public void newPost(String text, Profile destProfile){
-        Post mypost = new Post(null,text,destProfile);
+        Post mypost = new Post(sessionProfile,text,destProfile);
         
         PostDB.save(mypost);
         reloadProfile();

@@ -12,6 +12,7 @@ import java.util.Date;
  * @author joao.pedro.pereira
  */
 public class Post {
+
     private int id;
     private Date date;
     private String text;
@@ -19,17 +20,15 @@ public class Post {
     private Profile author;
     private ArrayList<Profile> profileLikes;
     private ArrayList<Comment> comments;
-    
-    
 
-    public Post(Date date, String text, Profile profile) {
-        this.date = date;
+    public Post(Profile author, String text, Profile profile) {
+        this.date = new Date();  // Fecha automática al crear el post
         this.text = text;
+        this.author = author;    // El autor de la publicación (quién escribe)
+        this.profile = profile;  // El dueño del muro donde se publica
         this.profileLikes = new ArrayList<>();
         this.comments = new ArrayList<>();
     }
-    
-    
 
     public int getId() {
         return id;
@@ -86,8 +85,5 @@ public class Post {
     public void setComments(ArrayList<Comment> comments) {
         this.comments = comments;
     }
-    
-    
-    
-    
+
 }
