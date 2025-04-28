@@ -10,6 +10,7 @@ import java.util.Scanner;
 import modelo.Comment;
 import modelo.Post;
 import modelo.Profile;
+import persistencia.ProfileDB;
 
 /**
  *
@@ -43,12 +44,12 @@ public class ProfileView {
         //Mostra o estato do usuario
         System.out.println("Estado actual: " + profile.getStatus());
         //Mostra as publicacions do usuario e os comentarios da publicacion
-        for (int i=0; i<profile.getPosts().size(); i++) {
-            System.out.println(i +". " + profile.getPosts().get(i).getText());
-            
-           for (Comment c:profile.getPosts().get(i).getComments()) {
-               System.out.println("- " + c.getText() + " - " + c.getSourceProfile().getName() + " - " + c.getDate().toString());
-           }
+        for (int i = 0; i < profile.getPosts().size(); i++) {
+            System.out.println(i + ". " + profile.getPosts().get(i).getText());
+
+            for (Comment c : profile.getPosts().get(i).getComments()) {
+                System.out.println("- " + c.getText() + " - " + c.getSourceProfile().getName() + " - " + c.getDate().toString());
+            }
         }
         //Mostra as solicitudes de amizade
         System.out.println("Solicitudes de amizade: " + profile.getFriendRequests());
@@ -162,63 +163,260 @@ public class ProfileView {
 
         return imput;
     }
-    
+
     /**
      * Pide o texto para crear unha nova publicación
+     *
      * @param scanner
-     * @param profile 
+     * @param profile
      */
-    private void writeNewPost(Scanner scanner, Profile profile){
+    private void writeNewPost(Scanner scanner, Profile profile) {
         System.out.println("Texto de la publicación :");
         String text = scanner.nextLine();
-        
+
         profileController.newPost(text, profile);
     }
-    
+
     /**
      * Crea un comentario
+     *
      * @param scanner
-     * @param profile 
+     * @param profile
      */
-    private void commentPost(Scanner scanner, Profile profile){
+    private void commentPost(Scanner scanner, Profile profile) {
         //Pide selecionar unha publicación
         String selectiontext = "Selecciona unha publicacion";
         int postNumber = selectElement(selectiontext, postsShowed, scanner);
         Post p = profile.getPosts().get(postNumber);
-        
-        
+
         //Crea o comentario
         System.out.println("Que quere comentar: ");
         String text = scanner.nextLine();
         profileController.newComment(p, text);
     }
-    
+
     /**
      * Añade un like
+     *
      * @param scanner
-     * @param profile 
+     * @param profile
      */
-    private void addLike(Scanner scanner, Profile profile){
+    private void addLike(Scanner scanner, Profile profile) {
         //Pide selecionar unha publicación
         String selectiontext = "Selecciona unha publicacion";
         int postNumber = selectElement(selectiontext, postsShowed, scanner);
         Post p = profile.getPosts().get(postNumber);
-        
+
         //Añade o like a publicación
         profileController.newLike(p);
     }
-    
+
     /**
      * Mostra o perfil dun usuario diferente ao que está mostrando
+     *
      * @param ownProfile
      * @param scanner
-     * @param profile 
+     * @param profile
      */
-    private void showBiography(boolean ownProfile, Scanner scanner, Profile profile){
-        if(ownProfile){
-            System.out.println("Selecciona un amigo para mostrar o seu perfil");
+    private void showBiography(boolean ownProfile, Scanner scanner, Profile profile) {
+        if (ownProfile) {
+            System.out.println("Selecciona un amigo para mostrar o seu perfil:");
+            for (int i = 0; i < profile.getFriends().size(); i++) {
+                System.out.println(i + ". " + profile.getFriends().get(i).getName());
+            }
+            int friendSelected = selectElement("Elixe un numero", postsShowed, scanner);
+            Profile friendProfile = profile.getFriends().get(friendSelected);
+            profileController.setShownProfile(friendProfile); //Mostra o perfil doutro usuario
+        }
+    }
+
+    /**
+     * Pideo o nome dun perfil e envialle unha solicitude de amizade
+     *
+     * @param ownProfile
+     * @param scanner
+     * @param profile
+     */
+    private void sendFriendshipRequest(boolean ownProfile, Scanner scanner, Profile profile) {
+        if (ownProfile) {
+            System.out.println("Escriba o nome do perfil ao que quere mandar solicitude de amizade");
+            String nameRequest = scanner.nextLine();
+            if (nameRequest.isEmpty()) {
+                showProfileNotFoundMessage();
+            } else if (nameRequest.equals(profile.getName())) {
+                System.out.println("Non podes facerte solicitude de amizade a ti mesmo");
+            } else {
+                profileController.newFriendshipRequest(nameRequest);
+            }
+        } else {
+            System.out.println("Mandando solicitude de amizade a " + profileController.getShownProfile().getName());
+            profileController.newFriendshipRequest(profileController.getShownProfile().getName()); //Manda a solicitude ao usuario que está visualizando
+        }
+    }
+
+    /**
+     * Pideo o número dunha solicitude de amizade e chama ao controllador para
+     * aceptala ou rexeitala, en función do que se indique no parámetro "accept"
+     *
+     * @param ownProfile
+     * @param scanner
+     * @param profile
+     * @param accept decide se se acepta ou rexeita a solicitude de amizade
+     */
+    private void proccessFriendshipRequest(boolean ownProfile, Scanner scanner, Profile profile, boolean accept) {
+        if (ownProfile) {
+            System.out.println("Selecione unha solicitude de amizade para aceptala ou rexeitala");
+            //Mosta todas as solicitudes de amizade do perfil
+            for (int i = 0; i < profile.getFriendRequests().size(); i++) {
+                System.out.println(i + ". " + profile.getFriendRequests().get(i).getName());
+            }
+            int selectedFriendShipRequest = selectElement("Elixe o numero da publicación", postsShowed, scanner); //Numero da solicitude que se seleccionou
+            Profile profileSelected = profile.getFriendRequests().get(selectedFriendShipRequest);
+
+            //Selecciona se acepta ou rexeita a solicitude de amizade
+            System.out.println("1. Aceptar");
+            System.out.println("2. Rexeitar");
+            String num = scanner.nextLine();
+
+            if (num.equals("1")) {
+                profileController.acceptFriendshipRequest(profileSelected);
+            } else {
+                profileController.rejectFriendshipRequest(profileSelected);
+            }
+
+        }
+    }
+
+    /**
+     * Se estamos vendo o propio perfil, pide ao usuario seleccionar un amigo e
+     * o texto da mensaxe e chama ao controlador para enviar unha mensaxe. Se
+     * estamos vendo o perfil dunha amizade, pideo o texto para enviarlle unha
+     * mensaxe a ese perfil.
+     *
+     * @param ownProfile
+     * @param scanner
+     * @param profile
+     */
+    private void sendPrivateMessage(boolean ownProfile, Scanner scanner, Profile profile) {
+
+        if (ownProfile) {
+            //Selecciona o perfil que se quere mandar a mensaxe
+            System.out.println("Selecciona un amigo para mandar unha mensaxe: ");
+            for (int i = 0; i < profile.getFriends().size(); i++) {
+                System.out.println(i + ". " + profile.getFriends().get(i).getName());
+            }
+            int friendSelected = selectElement("Elixe un numero", postsShowed, scanner);
+            Profile friendProfile = profile.getFriends().get(friendSelected);
+
+            //Escribese e enviase a mensaxe
+            System.out.println("Escriba a mensaxe que quere enviar");
+            String text = scanner.nextLine();
+            profileController.newMessage(friendProfile, text);
+        } else {
+            //Escribese e enviase a mensaxe
+            System.out.println("Escriba a mensaxe que quere enviar a este usuario");
+            String text = scanner.nextLine();
+            profileController.newMessage(profileController.getShownProfile(), text); //Envia a mensaxe ao usuario que está visualizando
+        }
+    }
+
+    /**
+     * Pide ao usuario que se seleccione unha mensaxe e a mostra completa, dando
+     * as opcións de respondela, eliminala ou simplemente volver á biografia
+     * marcando a mensaxe como lida, chamando ao controlador para executar as
+     * distintas accións.
+     *
+     * @param ownProfile
+     * @param scanner
+     * @param profile
+     */
+    private void readPrivateMessage(boolean ownProfile, Scanner scanner, Profile profile) {
+        System.out.println("Que mensaxe queres ler");
+        int messageIndex = scanner.nextInt();
+        for(int i = 0; i < profile.getMessages().size(); i++) {
+            System.out.println(i + ". " + profile.getMessages().get(i).getText());
+        }
+    }
+
+    /**
+     * Pide ao usuario que seleccion unha mensaxe e chama ao controlador para
+     * borrala
+     *
+     * @param ownProfile
+     * @param scanner
+     * @param profile
+     */
+    private void deletePrivateMessage(boolean ownProfile, Scanner scanner, Profile profile) {
+        if(ownProfile) {
             
         }
     }
 
+    /**
+     * Pide o número de publicacións que se queren visualizar e chamar ao
+     * controlador para recargar o perfil
+     *
+     * @param scanner
+     * @param profile
+     */
+    private void showOldPosts(Scanner scanner, Profile profile) {
+        //Pide e recolle o numero de publicacións que se queren visualizar
+        System.out.println("Cantas publicacións queres visualizar");
+        int numposts = scanner.nextInt();
+        scanner.nextLine();
+        //Establece ese numero ao perfil
+        postsShowed = numposts;
+        //Recarga o perfil
+        profileController.reloadProfile();
+    }
+
+    /**
+     * Informa que un perfil non se atopou (Úsase cando se quere enviar unha
+     * solicitude de amizade).
+     */
+    public void showProfileNotFoundMessage() {
+        System.out.println("Perfil non atopado");
+    }
+
+    /**
+     * Informa de que non se pode facer like sobre unha publicación propia
+     */
+    public void showCannotLikeOwnPostMessage() {
+        System.out.println("Non podes facer like sobre as tuas propias publicacions");
+    }
+
+    /**
+     * Informa de que non se pode facer like sobre unha publicación sobre a que
+     * xa se fixo like
+     */
+    public void showAlreadyLikedPostMessage() {
+        System.out.println("Non podes volver facer like sobre a mesma publicación");
+    }
+
+    /**
+     * Informa de que xa tes amizade con ese perfil
+     *
+     * @param profileName
+     */
+    public void showIsAlreadyFriendMessage(String profileName) {
+        System.out.println("Xa tes unha solicitude de amizade con este perfil");
+    }
+
+    /**
+     * Informa de que ese perfil xa ten unha solicitude de amizade contigo
+     *
+     * @param profileName
+     */
+    public void showExistsFrienshipRequestMessage(String profileName) {
+        System.out.println("Este perfil xa ten unha solicitude de amizade contigo");
+    }
+
+    /**
+     * Informa de que xa tes unha solicitude de amizade con ese perfil
+     *
+     * @param profileName
+     */
+    public void showDuplicateFrienshipRequestMessage(String profileName) {
+        System.out.println("Xa tes unha solicitude de amizade con este perfil");
+    }
 }
