@@ -19,17 +19,17 @@ import vista.ProfileView;
  * @author joao.pedro.pereira
  */
 public class ProfileController {
-    
+
     private ProfileView profileView;
     private Profile sessionProfile;
     private Profile shownProfile;
-    
-    public ProfileController(){
+
+    public ProfileController() {
         this.profileView = new ProfileView(this);
         this.shownProfile = sessionProfile;
     }
-    
-        public Profile getShownProfile() {
+
+    public Profile getShownProfile() {
         return shownProfile;
     }
 
@@ -37,164 +37,175 @@ public class ProfileController {
         this.shownProfile = shownProfile;
         reloadProfile();
     }
-    
+
     /**
      * Obten o numero de publicacións a mostrar
-     * @return 
+     *
+     * @return
      */
-    public int getPostsShowed(){
+    public int getPostsShowed() {
         return profileView.getPostsShowed();
     }
-    
+
     /**
-     * Mostra o menu do perfil 
+     * Mostra o menu do perfil
      */
-    public void reloadProfile(){
+    public void reloadProfile() {
         // Precisamente neste método "reloadProfile" cambiaremos o código para que en lugar de almacenar o perfil no atributo
         // "sessionProfile" o garde no atributo "shownProfile", e sexa ese atributo o que se lle pase ao obxecto da vista
     }
-    
+
     /**
      * Abre unha sesión con un perfil
-     * @param sessionProfile 
+     *
+     * @param sessionProfile
      */
-    public void openSession(Profile sessionProfile){
+    public void openSession(Profile sessionProfile) {
         this.sessionProfile = sessionProfile;
-        
-        if(this.profileView == null) {
+
+        if (this.profileView == null) {
             this.profileView = new ProfileView(this);
         }
         profileView.showProfileMenu(sessionProfile);
     }
-    
+
     /**
      * Actualiza o estatus do perfil
-     * @param newStatus 
+     *
+     * @param newStatus
      */
-    public void updateProfileStatus(String newStatus){
+    public void updateProfileStatus(String newStatus) {
         sessionProfile.setStatus(newStatus);
         ProfileDB.update(sessionProfile);
         reloadProfile();
     }
-    
+
     /**
      * Crea un novo post
+     *
      * @param text
-     * @param destProfile 
+     * @param destProfile
      */
-    public void newPost(String text, Profile destProfile){
-        Post mypost = new Post(sessionProfile,text,destProfile);
-        
+    public void newPost(String text, Profile destProfile) {
+        Post mypost = new Post(sessionProfile, text, destProfile);
+
         PostDB.save(mypost);
         reloadProfile();
     }
-    
+
     /**
      * Crea un novo comentario
+     *
      * @param post
-     * @param commentText 
+     * @param commentText
      */
-    public void newComment(Post post, String commentText){
+    public void newComment(Post post, String commentText) {
         Comment mycomment = new Comment(post, commentText);
-        
+
         CommentDB.save(mycomment);
         reloadProfile();
     }
-    
+
     /**
      * Añade un like a un post
-     * @param post 
+     *
+     * @param post
      */
-    public void newLike(Post post){
+    public void newLike(Post post) {
         // Comproba se o usuario non he o autor da publicación e non dera xa un like
-        if(!post.getAuthor().getName().equals(sessionProfile.getName()) && !post.getProfileLikes().contains(post.getProfile())){
+        if (!post.getAuthor().getName().equals(sessionProfile.getName()) && !post.getProfileLikes().contains(post.getProfile())) {
             post.getProfileLikes().add(sessionProfile);
-        } 
+        }
         reloadProfile();
     }
-    
+
     /**
      * Añade unha solicitude de amizade a un usuario
-     * @param profileName 
+     *
+     * @param profileName nome do usuario ao que se lle quere mandar a
+     * solicitude de amizade
      */
-    public void newFriendshipRequest(String profileName){
-        // Comproba que non exista xá a mesma solicitude de amizade
-        if(!sessionProfile.getFriendRequests().contains(ProfileDB.findByName(profileName, 0))){
-            ProfileDB.saveFrienshipRequest(sessionProfile, ProfileDB.findByName(profileName, 0));
-        } 
+    public void newFriendshipRequest(String profileName) {
+        ProfileDB.saveFrienshipRequest(ProfileDB.findByName(profileName, 1), sessionProfile);
         reloadProfile();
     }
-    
+
     /**
      * Acepta a solicitude de amizade
-     * @param sourceProfile 
+     *
+     * @param sourceProfile
      */
-    public void acceptFriendshipRequest(Profile sourceProfile){
+    public void acceptFriendshipRequest(Profile sourceProfile) {
         // Elimina a solicitude de amizade e añade o perfil a lista de amigos
         ProfileDB.removeFrienshipRequest(sessionProfile, sourceProfile);
         sourceProfile.getFriends().add(sourceProfile);
-        
+
         reloadProfile();
     }
-    
+
     /**
      * Non acepta a solicitude de amizade
-     * @param sourceProfile 
+     *
+     * @param sourceProfile
      */
-    public void rejectFriendshipRequest(Profile sourceProfile){
+    public void rejectFriendshipRequest(Profile sourceProfile) {
         //Elimina a solicitude de amizade
         ProfileDB.removeFrienshipRequest(sessionProfile, sourceProfile);
-        
+
         reloadProfile();
     }
-    
+
     /**
      * Crea unha mensaxe
+     *
      * @param destProfile
-     * @param text 
+     * @param text
      */
-    public void newMessage(Profile destProfile, String text){
+    public void newMessage(Profile destProfile, String text) {
         //Crea un obxeto Message
         Message myMessage = new Message(destProfile, text);
         // Garda o obxeto
         MessageDB.save(myMessage);
-        
+
         reloadProfile();
-        
+
     }
-    
+
     /**
      * Elimina unha mensaxe
-     * @param message 
+     *
+     * @param message
      */
-    public void deleteMessage(Message message){
+    public void deleteMessage(Message message) {
         MessageDB.remove(message);
-        
+
         reloadProfile();
     }
-    
+
     /**
      * Marca unha mensaxe como leida
-     * @param message 
+     *
+     * @param message
      */
-    public void markMessageAsRead(Message message){
+    public void markMessageAsRead(Message message) {
         message.setRead(true);
         MessageDB.update(message);
-        
+
         reloadProfile();
     }
-    
+
     /**
      * Marca unha mensaxe como leida e envia unha mensaxe de resposta
+     *
      * @param message
-     * @param text 
+     * @param text
      */
     public void replyMessage(Message message, String text) {
         message.setRead(true);
         MessageDB.update(message);
-        
+
         newMessage(sessionProfile, text);
         reloadProfile();
     }
-    
+
 }

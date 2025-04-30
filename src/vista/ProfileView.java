@@ -46,9 +46,9 @@ public class ProfileView {
             System.out.println("Estado actual: " + profile.getStatus());
             //Mostra as publicacions do usuario e os comentarios da publicacion
             System.out.println("A túa biografía (" + postsShowed + " últimas publicacións):");
-            if (profile.getPosts() != null) {
+            if (!profile.getPosts().isEmpty()) {
                 for (int i = 0; i < postsShowed; i++) {
-                    System.out.println(i + ". " + profile.getPosts().get(i).getDate().toString() + "ti escriches (" + profile.getPosts().get(i).getProfileLikes() + " me gusta):");
+                    System.out.println(i + ". " + profile.getPosts().get(i).getDate().toString() + " ti escriches (" + profile.getPosts().get(i).getProfileLikes() + " me gusta):");
                     System.out.println(profile.getPosts().get(i).getText());
 
                     for (Comment c : profile.getPosts().get(i).getComments()) {
@@ -62,15 +62,33 @@ public class ProfileView {
                 System.out.println(i + ". " + profile.getFriends().get(i).getName() + " - " + profile.getFriends().get(i).getStatus());
             }
 
-            if (profile.getFriendRequests().size() >= 1) {
+            if (!profile.getFriendRequests().isEmpty()) {
                 //Mostra as solicitudes de amizade
                 System.out.println("Tes solicitude de amizade dos seguintes perfís:");
                 for (int i = 0; i < profile.getFriendRequests().size(); i++) {
                     System.out.println(i + ". " + profile.getFriendRequests().get(i).getName() + " quere establecer amizade contigo.");
                 }
             }
-            //Mostra as mensaxes
-            System.out.println("Mensaxes: " + profile.getMessages());
+            //Mostra as mensaxes 
+            System.out.println("Mensaxes privadas:");
+            //Contador de mensaxes sen leer
+            int unreadedmessages = 0;
+            for (int i = 0; i < profile.getMessages().size(); i++) {
+
+                if (profile.getMessages().get(i).isRead() == false) {
+                    unreadedmessages++;
+                }
+            }
+            if (unreadedmessages > 0) {
+                System.out.println("Tes " + unreadedmessages + " sen ler!!");
+            }
+            for (int i = 0; i < profile.getMessages().size(); i++) {
+                if (profile.getMessages().get(i).isRead()) {
+                    System.out.println(i + ". De " + profile.getMessages().get(i).getSourceProfile().getName() + "(" + profile.getMessages().get(i).getDate() + ") " + profile.getMessages().get(i).getText().substring(0, 10));
+                } else {
+                    System.out.println("*" + i + ". De " + profile.getMessages().get(i).getSourceProfile().getName() + "(" + profile.getMessages().get(i).getDate() + ") " + profile.getMessages().get(i).getText().substring(0, 10));
+                }
+            }
         }
     }
 
@@ -134,24 +152,34 @@ public class ProfileView {
                     writeNewPost(scanner, profile);
                     break;
                 case 2:
+                    commentPost(scanner, profile);
                     break;
                 case 3:
+                    addLike(scanner, profile);
                     break;
                 case 4:
+                    showBiography(true, scanner, profile);
                     break;
                 case 5:
+                    sendFriendshipRequest(true, scanner, profile);
                     break;
                 case 6:
+                    proccessFriendshipRequest(true, scanner, profile, true);
                     break;
                 case 7:
+                    proccessFriendshipRequest(true, scanner, profile, false);
                     break;
                 case 8:
+                    sendPrivateMessage(true, scanner, profile);
                     break;
                 case 9:
+                    readPrivateMessage(true, scanner, profile);
                     break;
                 case 10:
+                    deletePrivateMessage(true, scanner, profile);
                     break;
                 case 11:
+                    showOldPosts(scanner, profile);
                     break;
                 case 12:
                     changeStatus(true, scanner, profile);
@@ -300,14 +328,14 @@ public class ProfileView {
             //Selecciona se acepta ou rexeita a solicitude de amizade
             System.out.println("1. Aceptar");
             System.out.println("2. Rexeitar");
+            System.out.println("3. Cancelar");
             String num = scanner.nextLine();
 
             if (num.equals("1")) {
                 profileController.acceptFriendshipRequest(profileSelected);
-            } else {
+            } else if (num.equals("2")) {
                 profileController.rejectFriendshipRequest(profileSelected);
             }
-
         }
     }
 
@@ -322,28 +350,26 @@ public class ProfileView {
      * @param profile
      */
     private void sendPrivateMessage(boolean ownProfile, Scanner scanner, Profile profile) {
-
         if (ownProfile) {
-            //Selecciona o perfil que se quere mandar a mensaxe
-            System.out.println("Selecciona un amigo para mandar unha mensaxe: ");
+            //Selecciona el perfil para enviar el mensaje
+            System.out.println("Selecciona un amigo para mandar una mensaje: ");
             for (int i = 0; i < profile.getFriends().size(); i++) {
                 System.out.println(i + ". " + profile.getFriends().get(i).getName());
             }
             int friendSelected = selectElement("Elixe un numero", postsShowed, scanner);
             Profile friendProfile = profile.getFriends().get(friendSelected);
 
-            //Escribese e enviase a mensaxe
-            System.out.println("Escriba a mensaxe que quere enviar");
+            //Escribir y enviar el mensaje
+            System.out.println("Escriba la mensaje que desea enviar");
             String text = scanner.nextLine();
             profileController.newMessage(friendProfile, text);
         } else {
-            //Escribese e enviase a mensaxe
-            System.out.println("Escriba a mensaxe que quere enviar a este usuario");
+            //Escribir y enviar el mensaje
+            System.out.println("Escriba la mensaje que desea enviar a este usuario");
             String text = scanner.nextLine();
-            profileController.newMessage(profileController.getShownProfile(), text); //Envia a mensaxe ao usuario que está visualizando
+            profileController.newMessage(profileController.getShownProfile(), text); //Envia mensaje al usuario mostrado
         }
     }
-
     /**
      * Pide ao usuario que se seleccione unha mensaxe e a mostra completa, dando
      * as opcións de respondela, eliminala ou simplemente volver á biografia
