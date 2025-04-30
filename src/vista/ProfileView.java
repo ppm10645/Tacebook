@@ -61,9 +61,9 @@ public class ProfileView {
             for (int i = 0; i < profile.getFriends().size(); i++) {
                 System.out.println(i + ". " + profile.getFriends().get(i).getName() + " - " + profile.getFriends().get(i).getStatus());
             }
-
+            //Mostra as solicitudes de amizade
             if (!profile.getFriendRequests().isEmpty()) {
-                //Mostra as solicitudes de amizade
+
                 System.out.println("Tes solicitude de amizade dos seguintes perfís:");
                 for (int i = 0; i < profile.getFriendRequests().size(); i++) {
                     System.out.println(i + ". " + profile.getFriendRequests().get(i).getName() + " quere establecer amizade contigo.");
@@ -370,6 +370,7 @@ public class ProfileView {
             profileController.newMessage(profileController.getShownProfile(), text); //Envia mensaje al usuario mostrado
         }
     }
+
     /**
      * Pide ao usuario que se seleccione unha mensaxe e a mostra completa, dando
      * as opcións de respondela, eliminala ou simplemente volver á biografia
