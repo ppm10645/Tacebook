@@ -26,8 +26,7 @@ public class ProfileDB {
 
         for (Profile profile : TacebookDB.getProfiles()) {
             if (profile.getName().equals(name)) {
-                Profile result = new Profile(profile.getName(), profile.getPassword(), profile.getStatus());
-                return result;
+                return profile;
             }
         }
         return null;
@@ -45,8 +44,7 @@ public class ProfileDB {
 
         for (Profile profile : TacebookDB.getProfiles()) {
             if (profile.getName().equals(name) && profile.getPassword().equals(password)) {
-                Profile result = new Profile(profile.getName(), profile.getPassword(), profile.getStatus());
-                return result;
+                return profile;
             }
         }
 

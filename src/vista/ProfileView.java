@@ -48,7 +48,7 @@ public class ProfileView {
             System.out.println("A túa biografía (" + postsShowed + " últimas publicacións):");
             if (!profile.getPosts().isEmpty()) {
                 for (int i = 0; i < postsShowed; i++) {
-                    System.out.println(i + ". " + profile.getPosts().get(i).getDate().toString() + " ti escriches (" + profile.getPosts().get(i).getProfileLikes() + " me gusta):");
+                    System.out.println(i + ". " + profile.getPosts().get(i).getDate().toString() + " ti escriches (" + profile.getPosts().get(i).getProfileLikes().size() + " me gusta):");
                     System.out.println(profile.getPosts().get(i).getText());
 
                     for (Comment c : profile.getPosts().get(i).getComments()) {
