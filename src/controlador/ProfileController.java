@@ -100,7 +100,7 @@ public class ProfileController {
      * @param commentText
      */
     public void newComment(Post post, String commentText) {
-        Comment mycomment = new Comment(post, commentText);
+        Comment mycomment = new Comment(post, commentText, sessionProfile);
 
         CommentDB.save(mycomment);
         reloadProfile();
@@ -138,7 +138,8 @@ public class ProfileController {
     public void acceptFriendshipRequest(Profile sourceProfile) {
         // Elimina a solicitude de amizade e añade o perfil a lista de amigos
         ProfileDB.removeFrienshipRequest(sessionProfile, sourceProfile);
-        sourceProfile.getFriends().add(sourceProfile);
+        sourceProfile.getFriends().add(sessionProfile);
+        sessionProfile.getFriends().add(sourceProfile);
 
         reloadProfile();
     }
@@ -168,7 +169,6 @@ public class ProfileController {
         MessageDB.save(myMessage);
 
         reloadProfile();
-
     }
 
     /**

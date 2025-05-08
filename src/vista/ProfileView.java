@@ -205,15 +205,13 @@ public class ProfileView {
      */
     private int selectElement(String text, int maxNumber, Scanner scanner) {
 
-        int imput = -1;
-
-        while (imput < 0 && imput > maxNumber - 1) {
-            System.out.println(text);
-            imput = scanner.nextInt();
-            scanner.nextLine(); //Limpar o buffer
-        }
-
-        return imput;
+        int number;
+        do {
+            System.out.print(text + " [0-" + (maxNumber - 1) + "]: ");
+            number = scanner.nextInt();
+            scanner.nextLine();
+        } while (number < 0 || number >= maxNumber);
+        return number;
     }
 
     /**

@@ -17,9 +17,11 @@ public class Comment {
     private Post post;
     private Profile sourceProfile;
 
-    public Comment(Post post, String text) {
+    public Comment(Post post, String text, Profile sourceProfile) {
         this.post = post;
         this.text = text;
+        this.sourceProfile = sourceProfile;
+        this.date = new Date();
     }
     
     
