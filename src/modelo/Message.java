@@ -66,7 +66,7 @@ public class Message {
         this.sourceProfile = sourceProfile;
     }
 
-    public Message(Profile destProfile, String text) {
+    public Message(Profile destProfile, String text, Profile sourceProfile) {
         this.id = id;
         this.text = text;
         this.date = date;

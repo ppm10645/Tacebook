@@ -164,7 +164,7 @@ public class ProfileController {
      */
     public void newMessage(Profile destProfile, String text) {
         //Crea un obxeto Message
-        Message myMessage = new Message(destProfile, text);
+        Message myMessage = new Message(destProfile, text, sessionProfile);
         // Garda o obxeto
         MessageDB.save(myMessage);
 

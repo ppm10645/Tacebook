@@ -80,7 +80,7 @@ public class ProfileView {
                 }
             }
             if (unreadedmessages > 0) {
-                System.out.println("Tes " + unreadedmessages + " sen ler!!");
+                System.out.println("Tes " + unreadedmessages + " mensaxe(s) privada(s) sen ler!!");
             }
             for (int i = 0; i < profile.getMessages().size(); i++) {
                 if (profile.getMessages().get(i).isRead()) {
@@ -380,10 +380,13 @@ public class ProfileView {
      * @param profile
      */
     private void readPrivateMessage(boolean ownProfile, Scanner scanner, Profile profile) {
-        System.out.println("Que mensaxe queres ler");
-        int messageIndex = scanner.nextInt();
-        for (int i = 0; i < profile.getMessages().size(); i++) {
-            System.out.println(i + ". " + profile.getMessages().get(i).getText());
+        if (ownProfile) {
+            System.out.println("Que mensaxe queres ler");
+            int messageIndex = scanner.nextInt();
+            scanner.nextLine();
+
+            System.out.println(messageIndex + ". " + profile.getMessages().get(messageIndex).getText());
+            profile.getMessages().get(messageIndex).setRead(true);
         }
     }
 
@@ -397,7 +400,11 @@ public class ProfileView {
      */
     private void deletePrivateMessage(boolean ownProfile, Scanner scanner, Profile profile) {
         if (ownProfile) {
-
+            System.out.println("Que mensaxe queres eliminar?");
+            int messageIndex = scanner.nextInt();
+            scanner.nextLine();
+            
+            profileController.deleteMessage(profile.getMessages().get(messageIndex));
         }
     }
 
