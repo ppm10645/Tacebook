@@ -1,10 +1,10 @@
 
-package controlador;
+package controller;
 
-import modelo.Profile;
-import persistencia.ProfileDB;
-import vista.InitMenuView;
-import controlador.ProfileController;
+import model.Profile;
+import persistence.ProfileDB;
+import view.InitMenuView;
+import controller.ProfileController;
 
 /**
  *

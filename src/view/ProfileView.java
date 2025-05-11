@@ -2,15 +2,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package vista;
+package view;
 
-import controlador.ProfileController;
+import controller.ProfileController;
 import java.text.SimpleDateFormat;
 import java.util.Scanner;
-import modelo.Comment;
-import modelo.Post;
-import modelo.Profile;
-import persistencia.ProfileDB;
+import model.Comment;
+import model.Post;
+import model.Profile;
+import persistence.ProfileDB;
 
 /**
  *

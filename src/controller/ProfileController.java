@@ -2,17 +2,17 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package controlador;
+package controller;
 
-import modelo.Comment;
-import modelo.Message;
-import modelo.Post;
-import modelo.Profile;
-import persistencia.CommentDB;
-import persistencia.MessageDB;
-import persistencia.PostDB;
-import persistencia.ProfileDB;
-import vista.ProfileView;
+import model.Comment;
+import model.Message;
+import model.Post;
+import model.Profile;
+import persistence.CommentDB;
+import persistence.MessageDB;
+import persistence.PostDB;
+import persistence.ProfileDB;
+import view.ProfileView;
 
 /**
  *
