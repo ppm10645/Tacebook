@@ -106,4 +106,25 @@ public class InitMenuView {
             return readNumber(scanner);
         }
     }
+    
+    /**
+     * Mostra unha mensaxe de erro coa conexion do almacen de datos
+     */
+    public void showConnectionErrorMessage() {
+        System.out.println("Erro na conexión co almacén de datos!");
+    }
+    
+    /**
+     * Mostra unha mensaxe de erro na lectura de datos
+     */
+    public void showReadErrorMessage() {
+        System.out.println("Erro na lectura de datos!");
+    }
+    
+    /**
+     * Mostra unha mensaxe de erro na escritura de datos
+     */
+    public void showWriteErrorMessage() {
+        System.out.println("Erro na escritura dos datos!");
+    }
 }

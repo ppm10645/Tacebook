@@ -78,5 +78,19 @@ public class InitMenuController {
             Logger.getLogger(InitMenuController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    /**
+     * Procesa unha excepción de persistencia e en función do código da excepción chamará a un dos tres métodos de error da clase view
+     * @param ex 
+     */
+    private void proccessPersistenceException(PersistenceException ex) {
+        switch (ex.getCode()) {
+            case PersistenceException.CONECTION_ERROR -> initMenuView.showConnectionErrorMessage();
+            case PersistenceException.CANNOT_READ -> initMenuView.showReadErrorMessage();
+            case PersistenceException.CANNOT_WRITE -> initMenuView.showWriteErrorMessage();
+            default -> {
+            }
+        }
+    }
 
 }
