@@ -15,11 +15,11 @@ public class TacebookDB {
     
     private static ArrayList<Profile> profiles = new ArrayList<>();
 
-    public static ArrayList<Profile> getProfiles() {
+    public static ArrayList<Profile> getProfiles(){
         return profiles;
     }
 
-    public static void setProfiles(ArrayList<Profile> profiles) {
+    public static void setProfiles(ArrayList<Profile> profiles){
         TacebookDB.profiles = profiles;
     }
 }

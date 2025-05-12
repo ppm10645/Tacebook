@@ -14,22 +14,27 @@ import model.Profile;
 public class ProfileDB {
 
     private ArrayList<Profile> profiles = new ArrayList<>();
-    
+
     /**
      * Recupera un perfil buscando polo nome e devolvendo o obxeto
      *
      * @param name
      * @param numberOfPosts
      * @return
+     * @throws persistence.PersistenceException
      */
-    public static Profile findByName(String name, int numberOfPosts) {
+    public static Profile findByName(String name, int numberOfPosts) throws PersistenceException {
+        try {
 
-        for (Profile profile : TacebookDB.getProfiles()) {
-            if (profile.getName().equals(name)) {
-                return profile;
+            for (Profile profile : TacebookDB.getProfiles()) {
+                if (profile.getName().equals(name)) {
+                    return profile;
+                }
             }
+            return null;
+        } catch (PersistenceException e) {
+            throw new PersistenceException(PersistenceException.CANNOT_READ, "Error de lectura");
         }
-        return null;
     }
 
     /**
@@ -39,51 +44,83 @@ public class ProfileDB {
      * @param password
      * @param numberOfPosts
      * @return
+     * @throws persistence.PersistenceException
      */
-    public static Profile findBuNameAdnPassword(String name, String password, int numberOfPosts) {
-
-        for (Profile profile : TacebookDB.getProfiles()) {
-            if (profile.getName().equals(name) && profile.getPassword().equals(password)) {
-                return profile;
+    public static Profile findBuNameAdnPassword(String name, String password, int numberOfPosts) throws PersistenceException {
+        try {
+            for (Profile profile : TacebookDB.getProfiles()) {
+                if (profile.getName().equals(name) && profile.getPassword().equals(password)) {
+                    return profile;
+                }
             }
+
+            return null;
+        } catch (PersistenceException e) {
+            throw new PersistenceException(PersistenceException.CANNOT_READ, "Error de lectura");
+        }
+    }
+
+    public static void save(Profile profile) throws PersistenceException {
+        try {
+        TacebookDB.getProfiles().add(profile);
+        } catch (PersistenceException e) {
+            throw new PersistenceException(PersistenceException.CANNOT_WRITE, "Error de escritura");
+        }
+    }
+
+    public static void update(Profile profile) throws PersistenceException {
+        try {
+           
+        } catch (Exception e) {
+            throw new PersistenceException(PersistenceException.CONECTION_ERROR, "Error de conexion");
         }
 
-        return null;
     }
 
-    public static void save(Profile profile) {
-        TacebookDB.getProfiles().add(profile);
-    }
-
-    public static void update(Profile profile) {
-
-    }
-    
     /**
      * Añade una nueva solicitud de amistad
+     *
      * @param destProfile usuario destino de la solicitud
      * @param sourceProfile usuario de la solicitud
+     * @throws persistence.PersistenceException
      */
-    public static void saveFrienshipRequest(Profile destProfile, Profile sourceProfile) {
-            destProfile.getFriendRequests().add(sourceProfile);
+    public static void saveFrienshipRequest(Profile destProfile, Profile sourceProfile) throws PersistenceException {
+        try {
+        destProfile.getFriendRequests().add(sourceProfile);
+        } catch (Exception e) {
+            throw new PersistenceException(PersistenceException.CANNOT_WRITE, "Error de escritura");
+        }
     }
-    
+
     /**
      * Borra unha solicitude de amizade entre dous perfis
+     *
      * @param destProfile usuario que quere borrar a solicitude
      * @param sourceProfile usuario que se quere borrar a solicitude
+     * @throws persistence.PersistenceException
      */
-    public static void removeFrienshipRequest(Profile destProfile, Profile sourceProfile) {
+    public static void removeFrienshipRequest(Profile destProfile, Profile sourceProfile) throws PersistenceException {
+        try {
         destProfile.getFriendRequests().remove(sourceProfile);
+        } catch (Exception e) {
+            throw new PersistenceException(PersistenceException.CANNOT_WRITE, "Error de escritura");
+        }
     }
-    
+
     /**
-     * Almacena unha amizade entre dous perfis e elimina a solicitude (Tengo que eliminar la solicitud?)
+     * Almacena unha amizade entre dous perfis e elimina a solicitude (Tengo que
+     * eliminar la solicitud?)
+     *
      * @param profile1
-     * @param profile2 
+     * @param profile2
+     * @throws persistence.PersistenceException
      */
-    public static void saveFriendship(Profile profile1, Profile profile2) {
+    public static void saveFriendship(Profile profile1, Profile profile2) throws PersistenceException {
+        try {
         profile1.getFriends().add(profile2);
         profile2.getFriends().add(profile1);
+        } catch (Exception e) {
+            throw new PersistenceException(PersistenceException.CANNOT_WRITE, "Error de escritura");
+        }
     }
 }

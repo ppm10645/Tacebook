@@ -6,6 +6,7 @@ package view;
 
 import controller.ProfileController;
 import java.text.SimpleDateFormat;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 import model.Comment;
 import model.Post;
@@ -208,8 +209,7 @@ public class ProfileView {
         int number;
         do {
             System.out.print(text + " [0-" + (maxNumber - 1) + "]: ");
-            number = scanner.nextInt();
-            scanner.nextLine();
+            number = readNumber(scanner);
         } while (number < 0 || number >= maxNumber);
         return number;
     }
@@ -382,8 +382,7 @@ public class ProfileView {
     private void readPrivateMessage(boolean ownProfile, Scanner scanner, Profile profile) {
         if (ownProfile) {
             System.out.println("Que mensaxe queres ler");
-            int messageIndex = scanner.nextInt();
-            scanner.nextLine();
+            int messageIndex = readNumber(scanner);
 
             System.out.println(messageIndex + ". " + profile.getMessages().get(messageIndex).getText());
             profile.getMessages().get(messageIndex).setRead(true);
@@ -401,8 +400,7 @@ public class ProfileView {
     private void deletePrivateMessage(boolean ownProfile, Scanner scanner, Profile profile) {
         if (ownProfile) {
             System.out.println("Que mensaxe queres eliminar?");
-            int messageIndex = scanner.nextInt();
-            scanner.nextLine();
+            int messageIndex = readNumber(scanner);
             
             profileController.deleteMessage(profile.getMessages().get(messageIndex));
         }
@@ -418,8 +416,7 @@ public class ProfileView {
     private void showOldPosts(Scanner scanner, Profile profile) {
         //Pide e recolle o numero de publicacións que se queren visualizar
         System.out.println("Cantas publicacións queres visualizar");
-        int numposts = scanner.nextInt();
-        scanner.nextLine();
+        int numposts = readNumber(scanner);
         //Establece ese numero ao perfil
         postsShowed = numposts;
         //Recarga o perfil
@@ -474,5 +471,17 @@ public class ProfileView {
      */
     public void showDuplicateFrienshipRequestMessage(String profileName) {
         System.out.println("Xa tes unha solicitude de amizade con este perfil");
+    }
+    
+    private int readNumber(Scanner scanner) {
+        try{
+            int number = scanner.nextInt();
+            scanner.nextLine(); //Limpiar buffer
+            return number;
+        } catch (NoSuchElementException e) {
+            System.out.println("Debe introduccir un numero");
+            scanner.nextLine(); //Limpiar buffer en caso de error
+            return readNumber(scanner);
+        }
     }
 }

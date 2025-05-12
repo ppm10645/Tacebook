@@ -4,12 +4,15 @@
  */
 package controller;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.Comment;
 import model.Message;
 import model.Post;
 import model.Profile;
 import persistence.CommentDB;
 import persistence.MessageDB;
+import persistence.PersistenceException;
 import persistence.PostDB;
 import persistence.ProfileDB;
 import view.ProfileView;
@@ -75,9 +78,13 @@ public class ProfileController {
      * @param newStatus
      */
     public void updateProfileStatus(String newStatus) {
-        sessionProfile.setStatus(newStatus);
-        ProfileDB.update(sessionProfile);
-        reloadProfile();
+        try {
+            sessionProfile.setStatus(newStatus);
+            ProfileDB.update(sessionProfile);
+            reloadProfile();
+        } catch (PersistenceException ex) {
+            Logger.getLogger(ProfileController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -87,10 +94,14 @@ public class ProfileController {
      * @param destProfile
      */
     public void newPost(String text, Profile destProfile) {
-        Post mypost = new Post(sessionProfile, text, destProfile);
-
-        PostDB.save(mypost);
-        reloadProfile();
+        try {
+            Post mypost = new Post(sessionProfile, text, destProfile);
+            
+            PostDB.save(mypost);
+            reloadProfile();
+        } catch (PersistenceException ex) {
+            Logger.getLogger(ProfileController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -100,10 +111,14 @@ public class ProfileController {
      * @param commentText
      */
     public void newComment(Post post, String commentText) {
-        Comment mycomment = new Comment(post, commentText, sessionProfile);
-
-        CommentDB.save(mycomment);
-        reloadProfile();
+        try {
+            Comment mycomment = new Comment(post, commentText, sessionProfile);
+            
+            CommentDB.save(mycomment);
+            reloadProfile();
+        } catch (PersistenceException ex) {
+            Logger.getLogger(ProfileController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -126,8 +141,12 @@ public class ProfileController {
      * solicitude de amizade
      */
     public void newFriendshipRequest(String profileName) {
-        ProfileDB.saveFrienshipRequest(ProfileDB.findByName(profileName, 1), sessionProfile);
-        reloadProfile();
+        try {
+            ProfileDB.saveFrienshipRequest(ProfileDB.findByName(profileName, 1), sessionProfile);
+            reloadProfile();
+        } catch (PersistenceException ex) {
+            Logger.getLogger(ProfileController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -136,12 +155,16 @@ public class ProfileController {
      * @param sourceProfile
      */
     public void acceptFriendshipRequest(Profile sourceProfile) {
-        // Elimina a solicitude de amizade e añade o perfil a lista de amigos
-        ProfileDB.removeFrienshipRequest(sessionProfile, sourceProfile);
-        sourceProfile.getFriends().add(sessionProfile);
-        sessionProfile.getFriends().add(sourceProfile);
-
-        reloadProfile();
+        try {
+            // Elimina a solicitude de amizade e añade o perfil a lista de amigos
+            ProfileDB.removeFrienshipRequest(sessionProfile, sourceProfile);
+            sourceProfile.getFriends().add(sessionProfile);
+            sessionProfile.getFriends().add(sourceProfile);
+            
+            reloadProfile();
+        } catch (PersistenceException ex) {
+            Logger.getLogger(ProfileController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -150,10 +173,14 @@ public class ProfileController {
      * @param sourceProfile
      */
     public void rejectFriendshipRequest(Profile sourceProfile) {
-        //Elimina a solicitude de amizade
-        ProfileDB.removeFrienshipRequest(sessionProfile, sourceProfile);
-
-        reloadProfile();
+        try {
+            //Elimina a solicitude de amizade
+            ProfileDB.removeFrienshipRequest(sessionProfile, sourceProfile);
+            
+            reloadProfile();
+        } catch (PersistenceException ex) {
+            Logger.getLogger(ProfileController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -163,12 +190,16 @@ public class ProfileController {
      * @param text
      */
     public void newMessage(Profile destProfile, String text) {
-        //Crea un obxeto Message
-        Message myMessage = new Message(destProfile, text, sessionProfile);
-        // Garda o obxeto
-        MessageDB.save(myMessage);
-
-        reloadProfile();
+        try {
+            //Crea un obxeto Message
+            Message myMessage = new Message(destProfile, text, sessionProfile);
+            // Garda o obxeto
+            MessageDB.save(myMessage);
+            
+            reloadProfile();
+        } catch (PersistenceException ex) {
+            Logger.getLogger(ProfileController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -177,9 +208,13 @@ public class ProfileController {
      * @param message
      */
     public void deleteMessage(Message message) {
-        MessageDB.remove(message);
-
-        reloadProfile();
+        try {
+            MessageDB.remove(message);
+            
+            reloadProfile();
+        } catch (PersistenceException ex) {
+            Logger.getLogger(ProfileController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -188,10 +223,14 @@ public class ProfileController {
      * @param message
      */
     public void markMessageAsRead(Message message) {
-        message.setRead(true);
-        MessageDB.update(message);
-
-        reloadProfile();
+        try {
+            message.setRead(true);
+            MessageDB.update(message);
+            
+            reloadProfile();
+        } catch (PersistenceException ex) {
+            Logger.getLogger(ProfileController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -201,11 +240,15 @@ public class ProfileController {
      * @param text
      */
     public void replyMessage(Message message, String text) {
-        message.setRead(true);
-        MessageDB.update(message);
-
-        newMessage(sessionProfile, text);
-        reloadProfile();
+        try {
+            message.setRead(true);
+            MessageDB.update(message);
+            
+            newMessage(sessionProfile, text);
+            reloadProfile();
+        } catch (PersistenceException ex) {
+            Logger.getLogger(ProfileController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }

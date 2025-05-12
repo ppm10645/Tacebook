@@ -5,6 +5,7 @@
 package view;
 
 import controller.InitMenuController;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 /**
@@ -22,33 +23,35 @@ public class InitMenuView {
     }
 
     public boolean showLoginMenu() {
+        OUTER:
         while (true) {
             System.out.println("Escolle unha opción:");
             System.out.println("1. Iniciar sesión");
             System.out.println("2. Crear un novo perfil");
             System.out.println("3. Saír da aplicación");
-
             String usname, uspassword;
-            int option = scanner.nextInt();
-            // Consumo del buffer de entrada el salto de linea
-            scanner.nextLine();
-
-            if (option == 1) {
-                System.out.println("Escriba o nome de usuario");
-                usname = scanner.nextLine();
-                System.out.println("Escriba o  contrasinal");
-                uspassword = scanner.nextLine();
-                initMenuController.login(usname, uspassword);
-                break;
-            } else if (option == 2) {
-                initMenuController.register();
-                break;
-            } else if (option == 3) {
-                System.out.println("Saindo da aplicacion");
-                return true;
-            } else {
-                System.out.println("Escolla algunha das opcións disponibles");
-                break;
+            int option = readNumber(scanner);
+            switch (option) {
+                case 1 -> {
+                    System.out.println("Escriba o nome de usuario");
+                    usname = scanner.nextLine();
+                    System.out.println("Escriba o  contrasinal");
+                    uspassword = scanner.nextLine();
+                    initMenuController.login(usname, uspassword);
+                    break OUTER;
+                }
+                case 2 -> {
+                    initMenuController.register();
+                    break OUTER;
+                }
+                case 3 -> {
+                    System.out.println("Saindo da aplicacion");
+                    return true;
+                }
+                default -> {
+                    System.out.println("Escolla algunha das opcións disponibles");
+                    break OUTER;
+                }
             }
         }
         return false;
@@ -90,5 +93,17 @@ public class InitMenuView {
     public String showNewNameMenu() {
         System.out.println("O nome de usuario xa está en uso, introduzca un novo nome de usuario");
         return scanner.nextLine();
+    }
+    
+    private int readNumber(Scanner scanner) {
+        try{
+            int number = scanner.nextInt();
+            scanner.nextLine(); //Limpiar buffer
+            return number;
+        } catch (NoSuchElementException e) {
+            System.out.println("Debe introduccir un numero");
+            scanner.nextLine(); //Limpiar buffer en caso de error
+            return readNumber(scanner);
+        }
     }
 }

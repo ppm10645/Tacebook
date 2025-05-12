@@ -15,8 +15,14 @@ public class CommentDB {
     /**
      * Almacena un novo comentario
      * @param comment 
+     * @throws persistence.PersistenceException 
      */
-    public static void save(Comment comment) {
-        comment.getPost().getComments().add(0, comment);
+    public static void save(Comment comment) throws PersistenceException {
+        try {
+            comment.getPost().getComments().add(0, comment);
+        } catch (Exception e) {
+            throw new PersistenceException(PersistenceException.CANNOT_WRITE, "Error de escritura");
+        }
+        
     }
 }
