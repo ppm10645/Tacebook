@@ -18,11 +18,7 @@ public class MessageDB {
      * @throws persistence.PersistenceException 
      */
     public static void save(Message message) throws PersistenceException{
-        try {
         message.getDestProfile().getMessages().add(0,message);
-        } catch (Exception e) {
-            throw new PersistenceException(PersistenceException.CANNOT_WRITE, "Error de escritura");
-        }
     }
     
     /**
@@ -31,11 +27,7 @@ public class MessageDB {
      * @throws persistence.PersistenceException 
      */
     public static void update(Message message) throws PersistenceException{
-        try {
-            
-        } catch (Exception e) {
-            throw new PersistenceException(PersistenceException.CONECTION_ERROR, "Error de conexion");
-        }
+        
     }
     
     /**
@@ -44,10 +36,6 @@ public class MessageDB {
      * @throws persistence.PersistenceException 
      */
     public static void remove(Message message) throws PersistenceException{
-        try  {
         message.getDestProfile().getMessages().remove(message);
-        } catch (Exception e) {
-            throw new PersistenceException(PersistenceException.CANNOT_WRITE, "Error de escritura");
-        }
     }
 }

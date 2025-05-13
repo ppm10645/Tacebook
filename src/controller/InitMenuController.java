@@ -3,10 +3,10 @@ package controller;
 
 import model.Profile;
 import persistence.ProfileDB;
-import view.InitMenuView;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import persistence.PersistenceException;
+import persistence.TacebookDB;
+import view.GUItInitMenuView;
+import view.TextInitMenuView;
 
 /**
  *
@@ -14,29 +14,40 @@ import persistence.PersistenceException;
  */
 public class InitMenuController {
 
-    private InitMenuView initMenuView = new InitMenuView(this);
+    //private TextInitMenuView textMenuView = new TextInitMenuView(this);
     private ProfileController profilecontroller = new ProfileController();
+    private boolean textMode;
 
     private void init() {
-        while (!initMenuView.showLoginMenu());
+        while (!textMenuView.showLoginMenu());
     }
 
+    public InitMenuController(boolean textMode) {
+        if(textMode) {
+            TextInitMenuView textMenuView = new TextInitMenuView(this);
+        } else {
+            GUItInitMenuView guiMenuView = new GUItInitMenuView(this);
+        }
+    }
+
+    
+    
     public void login(String name, String password) {
         try {
             Profile profile = ProfileDB.findBuNameAdnPassword(name, password, 0);
             
             if (profile == null) {
-                initMenuView.showLoginErrorMessage();
+                textMenuView.showLoginErrorMessage();
             } else {
                 profilecontroller.openSession(profile);
             }
         } catch (PersistenceException ex) {
-            Logger.getLogger(InitMenuController.class.getName()).log(Level.SEVERE, null, ex);
+            proccessPersistenceException(ex);
         }
     }
 
     public void register() {
-        initMenuView.showRegisterMenu();
+        textMenuView.showRegisterMenu();
     }
 
     /**
@@ -49,7 +60,7 @@ public class InitMenuController {
         try {
             // Comprobamos que el nome no este usado
             while (ProfileDB.findByName(name, 0) != null) {
-                name = initMenuView.showNewNameMenu();
+                name = textMenuView.showNewNameMenu();
             }
             // Creamos el objeto para el nuevo perfil y lo guardamos
             Profile newprofile = new Profile(name, password, status);
@@ -58,7 +69,7 @@ public class InitMenuController {
             ProfileController profilecontroller = new ProfileController();
             profilecontroller.openSession(newprofile);
         } catch (PersistenceException ex) {
-            Logger.getLogger(InitMenuController.class.getName()).log(Level.SEVERE, null, ex);
+            proccessPersistenceException(ex);
         }
     }
 
@@ -74,8 +85,10 @@ public class InitMenuController {
             ProfileDB.save(user2);
             
             controller.init();
+            
+            TacebookDB.close();
         } catch (PersistenceException ex) {
-            Logger.getLogger(InitMenuController.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Error: " + ex.getMessage());
         }
     }
     
@@ -85,9 +98,9 @@ public class InitMenuController {
      */
     private void proccessPersistenceException(PersistenceException ex) {
         switch (ex.getCode()) {
-            case PersistenceException.CONECTION_ERROR -> initMenuView.showConnectionErrorMessage();
-            case PersistenceException.CANNOT_READ -> initMenuView.showReadErrorMessage();
-            case PersistenceException.CANNOT_WRITE -> initMenuView.showWriteErrorMessage();
+            case PersistenceException.CONECTION_ERROR -> textMenuView.showConnectionErrorMessage();
+            case PersistenceException.CANNOT_READ -> textMenuView.showReadErrorMessage();
+            case PersistenceException.CANNOT_WRITE -> textMenuView.showWriteErrorMessage();
             default -> {
             }
         }

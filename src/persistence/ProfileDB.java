@@ -24,7 +24,6 @@ public class ProfileDB {
      * @throws persistence.PersistenceException
      */
     public static Profile findByName(String name, int numberOfPosts) throws PersistenceException {
-        try {
 
             for (Profile profile : TacebookDB.getProfiles()) {
                 if (profile.getName().equals(name)) {
@@ -32,9 +31,6 @@ public class ProfileDB {
                 }
             }
             return null;
-        } catch (PersistenceException e) {
-            throw new PersistenceException(PersistenceException.CANNOT_READ, "Error de lectura");
-        }
     }
 
     /**
@@ -47,7 +43,6 @@ public class ProfileDB {
      * @throws persistence.PersistenceException
      */
     public static Profile findBuNameAdnPassword(String name, String password, int numberOfPosts) throws PersistenceException {
-        try {
             for (Profile profile : TacebookDB.getProfiles()) {
                 if (profile.getName().equals(name) && profile.getPassword().equals(password)) {
                     return profile;
@@ -55,26 +50,14 @@ public class ProfileDB {
             }
 
             return null;
-        } catch (PersistenceException e) {
-            throw new PersistenceException(PersistenceException.CANNOT_READ, "Error de lectura");
-        }
     }
 
     public static void save(Profile profile) throws PersistenceException {
-        try {
         TacebookDB.getProfiles().add(profile);
-        } catch (PersistenceException e) {
-            throw new PersistenceException(PersistenceException.CANNOT_WRITE, "Error de escritura");
-        }
     }
 
     public static void update(Profile profile) throws PersistenceException {
-        try {
-           
-        } catch (Exception e) {
-            throw new PersistenceException(PersistenceException.CONECTION_ERROR, "Error de conexion");
-        }
-
+        
     }
 
     /**
@@ -85,11 +68,7 @@ public class ProfileDB {
      * @throws persistence.PersistenceException
      */
     public static void saveFrienshipRequest(Profile destProfile, Profile sourceProfile) throws PersistenceException {
-        try {
         destProfile.getFriendRequests().add(sourceProfile);
-        } catch (Exception e) {
-            throw new PersistenceException(PersistenceException.CANNOT_WRITE, "Error de escritura");
-        }
     }
 
     /**
@@ -100,11 +79,7 @@ public class ProfileDB {
      * @throws persistence.PersistenceException
      */
     public static void removeFrienshipRequest(Profile destProfile, Profile sourceProfile) throws PersistenceException {
-        try {
         destProfile.getFriendRequests().remove(sourceProfile);
-        } catch (Exception e) {
-            throw new PersistenceException(PersistenceException.CANNOT_WRITE, "Error de escritura");
-        }
     }
 
     /**
@@ -116,11 +91,7 @@ public class ProfileDB {
      * @throws persistence.PersistenceException
      */
     public static void saveFriendship(Profile profile1, Profile profile2) throws PersistenceException {
-        try {
         profile1.getFriends().add(profile2);
         profile2.getFriends().add(profile1);
-        } catch (Exception e) {
-            throw new PersistenceException(PersistenceException.CANNOT_WRITE, "Error de escritura");
-        }
     }
 }

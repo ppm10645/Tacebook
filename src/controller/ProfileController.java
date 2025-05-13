@@ -4,8 +4,6 @@
  */
 package controller;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import model.Comment;
 import model.Message;
 import model.Post;
@@ -16,6 +14,7 @@ import persistence.PersistenceException;
 import persistence.PostDB;
 import persistence.ProfileDB;
 import view.ProfileView;
+import view.TextProfileView;
 
 /**
  *
@@ -28,7 +27,7 @@ public class ProfileController {
     private Profile shownProfile;
 
     public ProfileController() {
-        this.profileView = new ProfileView(this);
+        this.profileView = new TextProfileView(this);
         this.shownProfile = sessionProfile;
     }
 
@@ -67,7 +66,7 @@ public class ProfileController {
         this.sessionProfile = sessionProfile;
 
         if (this.profileView == null) {
-            this.profileView = new ProfileView(this);
+            this.profileView = new TextProfileView(this);
         }
         profileView.showProfileMenu(sessionProfile);
     }
@@ -83,7 +82,7 @@ public class ProfileController {
             ProfileDB.update(sessionProfile);
             reloadProfile();
         } catch (PersistenceException ex) {
-            Logger.getLogger(ProfileController.class.getName()).log(Level.SEVERE, null, ex);
+            proccessPersistenceException(ex);
         }
     }
 
@@ -100,7 +99,7 @@ public class ProfileController {
             PostDB.save(mypost);
             reloadProfile();
         } catch (PersistenceException ex) {
-            Logger.getLogger(ProfileController.class.getName()).log(Level.SEVERE, null, ex);
+            proccessPersistenceException(ex);
         }
     }
 
@@ -117,7 +116,7 @@ public class ProfileController {
             CommentDB.save(mycomment);
             reloadProfile();
         } catch (PersistenceException ex) {
-            Logger.getLogger(ProfileController.class.getName()).log(Level.SEVERE, null, ex);
+            proccessPersistenceException(ex);
         }
     }
 
@@ -145,7 +144,7 @@ public class ProfileController {
             ProfileDB.saveFrienshipRequest(ProfileDB.findByName(profileName, 1), sessionProfile);
             reloadProfile();
         } catch (PersistenceException ex) {
-            Logger.getLogger(ProfileController.class.getName()).log(Level.SEVERE, null, ex);
+            proccessPersistenceException(ex);
         }
     }
 
@@ -163,7 +162,7 @@ public class ProfileController {
             
             reloadProfile();
         } catch (PersistenceException ex) {
-            Logger.getLogger(ProfileController.class.getName()).log(Level.SEVERE, null, ex);
+            proccessPersistenceException(ex);
         }
     }
 
@@ -179,7 +178,7 @@ public class ProfileController {
             
             reloadProfile();
         } catch (PersistenceException ex) {
-            Logger.getLogger(ProfileController.class.getName()).log(Level.SEVERE, null, ex);
+            proccessPersistenceException(ex);
         }
     }
 
@@ -198,7 +197,7 @@ public class ProfileController {
             
             reloadProfile();
         } catch (PersistenceException ex) {
-            Logger.getLogger(ProfileController.class.getName()).log(Level.SEVERE, null, ex);
+            proccessPersistenceException(ex);
         }
     }
 
@@ -213,7 +212,7 @@ public class ProfileController {
             
             reloadProfile();
         } catch (PersistenceException ex) {
-            Logger.getLogger(ProfileController.class.getName()).log(Level.SEVERE, null, ex);
+            proccessPersistenceException(ex);
         }
     }
 
@@ -229,7 +228,7 @@ public class ProfileController {
             
             reloadProfile();
         } catch (PersistenceException ex) {
-            Logger.getLogger(ProfileController.class.getName()).log(Level.SEVERE, null, ex);
+            proccessPersistenceException(ex);
         }
     }
 
@@ -247,7 +246,7 @@ public class ProfileController {
             newMessage(sessionProfile, text);
             reloadProfile();
         } catch (PersistenceException ex) {
-            Logger.getLogger(ProfileController.class.getName()).log(Level.SEVERE, null, ex);
+            proccessPersistenceException(ex);
         }
     }
     

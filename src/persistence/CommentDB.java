@@ -18,11 +18,6 @@ public class CommentDB {
      * @throws persistence.PersistenceException 
      */
     public static void save(Comment comment) throws PersistenceException {
-        try {
             comment.getPost().getComments().add(0, comment);
-        } catch (Exception e) {
-            throw new PersistenceException(PersistenceException.CANNOT_WRITE, "Error de escritura");
-        }
-        
     }
 }

@@ -22,4 +22,8 @@ public class TacebookDB {
     public static void setProfiles(ArrayList<Profile> profiles){
         TacebookDB.profiles = profiles;
     }
+    
+    public static void close() {
+        
+    }
 }

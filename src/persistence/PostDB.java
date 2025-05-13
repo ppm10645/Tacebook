@@ -19,12 +19,8 @@ public class PostDB {
      * @throws persistence.PersistenceException 
      */
     public static void save(Post post) throws PersistenceException{
-        try {
         Profile p = post.getProfile();
         p.getPosts().add(0, post);
-        } catch (Exception e) {
-            throw new PersistenceException(PersistenceException.CANNOT_WRITE, "Error de escritura");
-        }
     }
     
     /**
@@ -34,11 +30,7 @@ public class PostDB {
      * @throws persistence.PersistenceException 
      */
     public static void saveLike(Post post, Profile profile) throws PersistenceException{
-        try {
         post.getProfileLikes().add(profile);
-        } catch (Exception e) {
-            throw new PersistenceException(PersistenceException.CANNOT_WRITE, "Error de escritura");
-        }
     }
     
 }
