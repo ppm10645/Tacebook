@@ -13,6 +13,7 @@ import persistence.MessageDB;
 import persistence.PersistenceException;
 import persistence.PostDB;
 import persistence.ProfileDB;
+import view.GUIProfileView;
 import view.ProfileView;
 import view.TextProfileView;
 
@@ -25,9 +26,17 @@ public class ProfileController {
     private ProfileView profileView;
     private Profile sessionProfile;
     private Profile shownProfile;
+    private boolean textMode;
 
-    public ProfileController() {
-        this.profileView = new TextProfileView(this);
+    public ProfileController(boolean textMode) {
+        this.textMode = textMode;
+        
+        if(textMode) {
+            this.profileView = new TextProfileView(this);
+        } else {
+            this.profileView = new GUIProfileView(this);
+        }
+        
         this.shownProfile = sessionProfile;
     }
 
@@ -64,10 +73,7 @@ public class ProfileController {
      */
     public void openSession(Profile sessionProfile) {
         this.sessionProfile = sessionProfile;
-
-        if (this.profileView == null) {
-            this.profileView = new TextProfileView(this);
-        }
+        
         profileView.showProfileMenu(sessionProfile);
     }
 
