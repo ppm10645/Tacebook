@@ -5,15 +5,24 @@
 package view;
 
 import controller.InitMenuController;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+import javax.swing.Icon;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.UIManager;
 
 /**
  *
  * @author joao.pedro.pereira
  */
-public class GUItInitMenuView implements InitMenuView{
-    
+public class GUItInitMenuView implements InitMenuView {
+
     private InitMenuController initMenuController;
     private Scanner scanner;
 
@@ -24,38 +33,52 @@ public class GUItInitMenuView implements InitMenuView{
 
     @Override
     public boolean showLoginMenu() {
-        OUTER:
-        while (true) {
-            System.out.println("Version GUI");
-            System.out.println("Escolle unha opción:");
-            System.out.println("1. Iniciar sesión");
-            System.out.println("2. Crear un novo perfil");
-            System.out.println("3. Saír da aplicación");
-            String usname, uspassword;
-            int option = readNumber(scanner);
-            switch (option) {
-                case 1 -> {
-                    System.out.println("Escriba o nome de usuario");
-                    usname = scanner.nextLine();
-                    System.out.println("Escriba o  contrasinal");
-                    uspassword = scanner.nextLine();
-                    initMenuController.login(usname, uspassword);
-                    break OUTER;
-                }
-                case 2 -> {
-                    initMenuController.register();
-                    break OUTER;
-                }
-                case 3 -> {
-                    System.out.println("Saindo da aplicacion");
-                    return true;
-                }
-                default -> {
-                    System.out.println("Escolla algunha das opcións disponibles");
-                    break OUTER;
-                }
+
+        String[] options = {"Iniciar sesión", "Rexistrarse", "Sair"};
+        boolean exit = false;
+
+        while (!exit) {
+            JTextField username = new JTextField(20);
+            JTextField password = new JTextField(20);
+
+            JPanel panel = new JPanel(new GridBagLayout());
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = new Insets(5, 5, 5, 5);
+            gbc.anchor = GridBagConstraints.WEST;
+
+            gbc.gridheight = 1;
+            gbc.gridx = 1;
+            gbc.gridy = 0;
+            panel.add(new JLabel("Nome de usuario:"), gbc);
+
+            gbc.gridx = 2;
+            panel.add(username, gbc);
+
+            gbc.gridx = 1;
+            gbc.gridy = 1;
+            panel.add(new JLabel("Contrasinal:"), gbc);
+
+            gbc.gridx = 2;
+            panel.add(password, gbc);
+
+            int choice = JOptionPane.showOptionDialog(
+                    null, 
+                    panel, 
+                    "Entrar en tacebook", 
+                    JOptionPane.DEFAULT_OPTION, 
+                    JOptionPane.PLAIN_MESSAGE, 
+                    null, options, options[0]);
+
+            switch (choice) {
+                case 0 ->
+                    initMenuController.login(username.getText(), password.getText());
+                case 1 ->
+                    showRegisterMenu();
+                case 2 ->
+                    exit = true;
             }
         }
+
         return false;
     }
 
@@ -99,9 +122,9 @@ public class GUItInitMenuView implements InitMenuView{
         System.out.println("O nome de usuario xa está en uso, introduzca un novo nome de usuario");
         return scanner.nextLine();
     }
-    
+
     private int readNumber(Scanner scanner) {
-        try{
+        try {
             int number = scanner.nextInt();
             scanner.nextLine(); //Limpiar buffer
             return number;
@@ -111,7 +134,7 @@ public class GUItInitMenuView implements InitMenuView{
             return readNumber(scanner);
         }
     }
-    
+
     /**
      * Mostra unha mensaxe de erro coa conexion do almacen de datos
      */
@@ -119,7 +142,7 @@ public class GUItInitMenuView implements InitMenuView{
     public void showConnectionErrorMessage() {
         System.out.println("Erro na conexión co almacén de datos!");
     }
-    
+
     /**
      * Mostra unha mensaxe de erro na lectura de datos
      */
@@ -127,7 +150,7 @@ public class GUItInitMenuView implements InitMenuView{
     public void showReadErrorMessage() {
         System.out.println("Erro na lectura de datos!");
     }
-    
+
     /**
      * Mostra unha mensaxe de erro na escritura de datos
      */
