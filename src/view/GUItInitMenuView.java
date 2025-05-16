@@ -96,25 +96,96 @@ public class GUItInitMenuView implements InitMenuView {
      */
     @Override
     public void showRegisterMenu() {
-        System.out.println("Introduzca o nome de usuario");
-        String name = scanner.nextLine();
-        String contrasinal;
+        
+        String[] options = {"Aceptar", "Cancelar"};
 
-        while (true) {
-            System.out.println("Introduzca o contrasinal");
-            contrasinal = scanner.nextLine();
-            System.out.println("Introduzca de novo o contrasinal");
-            String repcontrasinal = scanner.nextLine();
-            if (repcontrasinal.equals(contrasinal)) {
-                break;
-            } else {
-                System.out.println("O contrasinal non coincide");
+        
+        boolean exit = false;
+
+        while (!exit) {
+            JTextField username = new JTextField(20);
+            JTextField password = new JTextField(20);
+            JTextField repassword = new JTextField(20);
+            JTextField status = new JTextField(20);
+
+            JPanel panel = new JPanel(new GridBagLayout());
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = new Insets(5, 5, 5, 5);
+            gbc.anchor = GridBagConstraints.WEST;
+
+            gbc.gridheight = 1;
+            gbc.gridx = 1;
+            gbc.gridy = 0;
+            panel.add(new JLabel("Nome de usuario:"), gbc);
+
+            gbc.gridx = 2;
+            panel.add(username, gbc);
+
+            gbc.gridx = 1;
+            gbc.gridy = 1;
+            panel.add(new JLabel("Contrasinal:"), gbc);
+
+            gbc.gridx = 2;
+            panel.add(password, gbc);
+            
+            gbc.gridx = 1;
+            gbc.gridy = 2;
+            panel.add(new JLabel("Repite contrasinal:"), gbc);
+            
+            gbc.gridx = 2;
+            panel.add(repassword, gbc);
+            
+            gbc.gridx = 1;
+            gbc.gridy = 3;
+            panel.add(new JLabel("Estado:"), gbc);
+            
+            gbc.gridx = 2;
+            panel.add(status, gbc);
+            
+
+            int choice = JOptionPane.showOptionDialog(
+                    null, 
+                    panel, 
+                    "Entrar en tacebook", 
+                    JOptionPane.DEFAULT_OPTION, 
+                    JOptionPane.PLAIN_MESSAGE, 
+                    null, options, options[0]);
+
+            switch (choice) {
+                case 0 -> {
+                    if(password.getText().equals(repassword.getText())) {
+                        initMenuController.createProfile(username.getText(), password.getText(), status.getText());
+                        initMenuController.login(username.getText(), password.getText());
+                        exit = true;
+                    } else {
+                        JOptionPane.showMessageDialog(null, "O contasinal non coincide");
+                    }
+                }
+                case 1 ->
+                    exit = true;
             }
+
         }
-        System.out.println("Introduzca o estado");
-        String estado = scanner.nextLine();
-        System.out.println("Rexistrouse correctamente o usuario");
-        initMenuController.createProfile(name, contrasinal, estado);
+        
+//        System.out.println("Introduzca o nome de usuario");
+//        String name = scanner.nextLine();
+//        String contrasinal;
+//
+//        while (true) {
+//            System.out.println("Introduzca o contrasinal");
+//            contrasinal = scanner.nextLine();
+//            System.out.println("Introduzca de novo o contrasinal");
+//            String repcontrasinal = scanner.nextLine();
+//            if (repcontrasinal.equals(contrasinal)) {
+//                break;
+//            } else {
+//                System.out.println("O contrasinal non coincide");
+//            }
+//        }
+//        System.out.println("Introduzca o estado");
+//        String estado = scanner.nextLine();
+//        System.out.println("Rexistrouse correctamente o usuario");
+//        initMenuController.createProfile(name, contrasinal, estado);
     }
 
     @Override
