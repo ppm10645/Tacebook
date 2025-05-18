@@ -28,22 +28,69 @@ public class ProfileController {
     private Profile shownProfile;
     private boolean textMode;
 
-    public ProfileController(boolean textMode) {
+    /**
+     * 
+     * @param textMode 
+     */
+    public ProfileController(Profile sessionProfile, boolean textMode) {
+        this.sessionProfile = sessionProfile;
         this.textMode = textMode;
         
         if(textMode) {
-            this.profileView = new TextProfileView(this);
+            profileView = new TextProfileView(this);
         } else {
-            this.profileView = new GUIProfileView(this);
+            profileView = new GUIProfileView(this);
         }
         
-        this.shownProfile = sessionProfile;
+        
     }
 
+    /**
+     * @return Usuario que ten a sesion iniciada
+     */
+    public Profile getSessionProfile() {
+        return sessionProfile;
+    }
+    
+    
+    
+    /**
+     * @return obxeto vista
+     */
+    public ProfileView getProfileView() {
+        return profileView;
+    }
+
+    /**
+     * Estableces a referencia ao obxeto vista
+     * @param profileView 
+     */
+    public void setProfileView(ProfileView profileView) {
+        this.profileView = profileView;
+    }
+    
+    
+
+    /**
+     * Establece o perfil da sesion
+     * @param sessionProfile 
+     */
+    public void setSessionProfile(Profile sessionProfile) {
+        this.sessionProfile = sessionProfile;
+    }
+
+    /**
+     * 
+     * @return perfil a mostrar
+     */
     public Profile getShownProfile() {
         return shownProfile;
     }
 
+    /**
+     * Establece o perfil a mostrar
+     * @param shownProfile 
+     */
     public void setShownProfile(Profile shownProfile) {
         this.shownProfile = shownProfile;
         reloadProfile();
@@ -95,8 +142,8 @@ public class ProfileController {
     /**
      * Crea un novo post
      *
-     * @param text
-     * @param destProfile
+     * @param text texto da publicacion
+     * @param destProfile perfil no que se publicará
      */
     public void newPost(String text, Profile destProfile) {
         try {

@@ -5,6 +5,7 @@ import persistence.ProfileDB;
 import persistence.PersistenceException;
 import persistence.TacebookDB;
 import view.GUItInitMenuView;
+import view.InitMenuView;
 import view.TextInitMenuView;
 
 /**
@@ -13,38 +14,42 @@ import view.TextInitMenuView;
  */
 public class InitMenuController {
 
-    private TextInitMenuView textMenuView;
-    private GUItInitMenuView guiMenuView;
-
-    private ProfileController profilecontroller;
-    private boolean textMode = true;
+    private InitMenuView initMenuView;
+    private boolean textMode;
 
     public InitMenuController(boolean textMode) {
         this.textMode = textMode;
-        this.profilecontroller = new ProfileController(textMode);
         if (textMode) {
-            this.textMenuView = new TextInitMenuView(this);
+            initMenuView = new TextInitMenuView(this);
         } else {
-            this.guiMenuView = new GUItInitMenuView(this);
+            initMenuView = new GUItInitMenuView(this);
         }
     }
 
+    /**
+     * Inicia a aplicacion
+     */
+    @SuppressWarnings("empty-statement")
     private void init() {
-        if (textMode) {
-            while (!textMenuView.showLoginMenu());
-        } else {
-            guiMenuView.showLoginMenu();
-        }
+        //Manten a aplicacion ata que devolva false
+        while(!initMenuView.showLoginMenu());
     }
 
+    /**
+     * Inicia session con un usuario existente
+     * @param name nome de usuario
+     * @param password contrasinal do usuario
+     */
     public void login(String name, String password) {
+        Profile profile = null;
         try {
-            Profile profile = ProfileDB.findBuNameAdnPassword(name, password, 0);
+            profile = ProfileDB.findBuNameAdnPassword(name, password, 0);
 
             if (profile == null) {
-                textMenuView.showLoginErrorMessage();
+                initMenuView.showLoginErrorMessage();
             } else {
-                profilecontroller.openSession(profile);
+                   ProfileController controller = new ProfileController(profile, textMode);
+                   controller.openSession(profile);
             }
         } catch (PersistenceException ex) {
             proccessPersistenceException(ex);
@@ -52,11 +57,11 @@ public class InitMenuController {
     }
 
     public void register() {
-        textMenuView.showRegisterMenu();
+        initMenuView.showRegisterMenu();
     }
 
     /**
-     *
+     * Crea un novo perfil
      * @param name
      * @param password
      * @param status
@@ -65,13 +70,13 @@ public class InitMenuController {
         try {
             // Comprobamos que el nome no este usado
             while (ProfileDB.findByName(name, 0) != null) {
-                name = textMenuView.showNewNameMenu();
+                name = initMenuView.showNewNameMenu();
             }
             // Creamos el objeto para el nuevo perfil y lo guardamos
             Profile newprofile = new Profile(name, password, status);
             ProfileDB.save(newprofile);
             // Creamos el controlador de la sesion con ese perfil
-            ProfileController newprofilecontroller = new ProfileController(this.textMode);
+            ProfileController newprofilecontroller = new ProfileController(newprofile, textMode);
             newprofilecontroller.openSession(newprofile);
         } catch (PersistenceException ex) {
             proccessPersistenceException(ex);
@@ -79,11 +84,19 @@ public class InitMenuController {
     }
 
     public static void main(String[] args) {
-        boolean textMode = args.length > 0 && args[0].equalsIgnoreCase("text");
-        
         try {
-            InitMenuController controller = new InitMenuController(textMode);
+            InitMenuController controller;
 
+            if(args.length > 0) {
+                if("text".equals(args[0])) {
+                    controller = new InitMenuController(true);
+                } else {
+                    controller = new InitMenuController(false);
+                }
+            } else {
+                controller = new InitMenuController(false);
+            }
+            
             //Usuario temporais para facer as probas
             Profile user1 = new Profile("a", "1", "activo");
             Profile user2 = new Profile("b", "1", "soy un usuario de prueba");
@@ -92,8 +105,8 @@ public class InitMenuController {
             ProfileDB.save(user2);
 
             controller.init();
-
             TacebookDB.close();
+            
         } catch (PersistenceException ex) {
             System.out.println("Error: " + ex.getMessage());
         }
@@ -108,11 +121,11 @@ public class InitMenuController {
     private void proccessPersistenceException(PersistenceException ex) {
         switch (ex.getCode()) {
             case PersistenceException.CONECTION_ERROR ->
-                textMenuView.showConnectionErrorMessage();
+                initMenuView.showConnectionErrorMessage();
             case PersistenceException.CANNOT_READ ->
-                textMenuView.showReadErrorMessage();
+                initMenuView.showReadErrorMessage();
             case PersistenceException.CANNOT_WRITE ->
-                textMenuView.showWriteErrorMessage();
+                initMenuView.showWriteErrorMessage();
             default -> {
             }
         }

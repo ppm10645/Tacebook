@@ -4,29 +4,40 @@
  */
 package view;
 
-import controller.InitMenuController;
-import java.util.Scanner;
+import controller.ProfileController;
+import java.text.SimpleDateFormat;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import model.Post;
 import model.Profile;
 
 /**
  *
  * @author joao.pedro.pereira
  */
-public class GUIProfileView extends javax.swing.JFrame implements ProfileView{
+public class GUIProfileView extends javax.swing.JFrame implements ProfileView {
 
-    
-     private InitMenuController initMenuController;
-     private Scanner scanner;
+    private int postShowed = 10;
+    private ProfileController profileController;
+    private final SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy 'ás' HH:mm:ss");
+
     /**
      * Creates new form ProfileFrame
-     * @param initMenuController
+     *
+     * @param profileController
      */
-    public GUIProfileView (InitMenuController initMenuController){
-        this.initMenuController = initMenuController;
-        this.scanner = new Scanner(System.in);
+    public GUIProfileView(ProfileController profileController) {
+        this.profileController = profileController;
         initComponents();
+        refreshPosts(profileController.getSessionProfile());
     }
 
+    public void setPostShowed(int postShowed) {
+        this.postShowed = postShowed;
+    }
+
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -39,32 +50,32 @@ public class GUIProfileView extends javax.swing.JFrame implements ProfileView{
         jPanel1 = new javax.swing.JPanel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
-        jLabel4 = new javax.swing.JLabel();
+        jLabelLastPublicationsText = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jTablePosts = new javax.swing.JTable();
         jButtonNewPubli = new javax.swing.JButton();
         jButtonNewComment = new javax.swing.JButton();
         jButtonLike = new javax.swing.JButton();
         jButtonSeeLastPubl = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        jTableComments = new javax.swing.JTable();
         jLabel5 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTable3 = new javax.swing.JTable();
+        jTableFriends = new javax.swing.JTable();
         jButtonBiografie = new javax.swing.JButton();
         jButtonSendMessage = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
+        jListFriendShipRequest = new javax.swing.JList<>();
         jButtonAcceptFriend = new javax.swing.JButton();
         jButtonRejectFriend = new javax.swing.JButton();
         jButtonNewFriendshiprequest = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         jScrollPane5 = new javax.swing.JScrollPane();
-        jTable4 = new javax.swing.JTable();
+        jTablePrivateMessages = new javax.swing.JTable();
         jButtonReedMessage = new javax.swing.JButton();
         jButtonDeleteMessage = new javax.swing.JButton();
         jButtonCloseSesion = new javax.swing.JButton();
@@ -79,10 +90,16 @@ public class GUIProfileView extends javax.swing.JFrame implements ProfileView{
 
         jPanel1.setLayout(new java.awt.BorderLayout());
 
-        jLabel4.setText("10 últimas publicacións:");
+        jLabelLastPublicationsText.setText("10 últimas publicacións:");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jTablePosts.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
                 {null, null, null, null},
                 {null, null, null, null},
                 {null, null, null, null},
@@ -95,12 +112,21 @@ public class GUIProfileView extends javax.swing.JFrame implements ProfileView{
             Class[] types = new Class [] {
                 java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
         });
-        jScrollPane1.setViewportView(jTable1);
+        jTablePosts.setShowGrid(false);
+        jTablePosts.setShowHorizontalLines(true);
+        jScrollPane1.setViewportView(jTablePosts);
 
         jButtonNewPubli.setText("Nova publicación");
         jButtonNewPubli.addActionListener(new java.awt.event.ActionListener() {
@@ -115,7 +141,7 @@ public class GUIProfileView extends javax.swing.JFrame implements ProfileView{
 
         jButtonSeeLastPubl.setText("Ver anteriores publicacións");
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        jTableComments.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
                 {null, null, null},
@@ -129,12 +155,21 @@ public class GUIProfileView extends javax.swing.JFrame implements ProfileView{
             Class[] types = new Class [] {
                 java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
         });
-        jScrollPane2.setViewportView(jTable2);
+        jTableComments.setShowGrid(false);
+        jTableComments.setShowHorizontalLines(true);
+        jScrollPane2.setViewportView(jTableComments);
 
         jLabel5.setText("Comentarios:");
 
@@ -146,7 +181,7 @@ public class GUIProfileView extends javax.swing.JFrame implements ProfileView{
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addGap(0, 176, Short.MAX_VALUE)
+                        .addGap(0, 222, Short.MAX_VALUE)
                         .addComponent(jButtonNewPubli)
                         .addGap(18, 18, 18)
                         .addComponent(jButtonNewComment)
@@ -160,7 +195,7 @@ public class GUIProfileView extends javax.swing.JFrame implements ProfileView{
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel4)
+                                .addComponent(jLabelLastPublicationsText)
                                 .addGap(0, 0, Short.MAX_VALUE)))
                         .addContainerGap())
                     .addGroup(jPanel2Layout.createSequentialGroup()
@@ -171,7 +206,7 @@ public class GUIProfileView extends javax.swing.JFrame implements ProfileView{
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel4)
+                .addComponent(jLabelLastPublicationsText)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -191,7 +226,7 @@ public class GUIProfileView extends javax.swing.JFrame implements ProfileView{
 
         jLabel6.setText("Lista de amigos:");
 
-        jTable3.setModel(new javax.swing.table.DefaultTableModel(
+        jTableFriends.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null},
                 {null, null},
@@ -205,12 +240,19 @@ public class GUIProfileView extends javax.swing.JFrame implements ProfileView{
             Class[] types = new Class [] {
                 java.lang.String.class, java.lang.String.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
         });
-        jScrollPane3.setViewportView(jTable3);
+        jScrollPane3.setViewportView(jTableFriends);
 
         jButtonBiografie.setText("Ver biografía");
 
@@ -218,12 +260,12 @@ public class GUIProfileView extends javax.swing.JFrame implements ProfileView{
 
         jLabel7.setText("Tes solicitudes de amizade dos seguintes perfis:");
 
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
+        jListFriendShipRequest.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane4.setViewportView(jList1);
+        jScrollPane4.setViewportView(jListFriendShipRequest);
 
         jButtonAcceptFriend.setText("Aceptar solicitude de amizade");
 
@@ -293,9 +335,8 @@ public class GUIProfileView extends javax.swing.JFrame implements ProfileView{
 
         jLabel8.setText("Mensaxes privadas:");
 
-        jTable4.setModel(new javax.swing.table.DefaultTableModel(
+        jTablePrivateMessages.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
                 {null, null, null, null},
                 {null, null, null, null},
                 {null, null, null, null}
@@ -307,12 +348,19 @@ public class GUIProfileView extends javax.swing.JFrame implements ProfileView{
             Class[] types = new Class [] {
                 java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
         });
-        jScrollPane5.setViewportView(jTable4);
+        jScrollPane5.setViewportView(jTablePrivateMessages);
 
         jButtonReedMessage.setText("Ler mensaxe");
 
@@ -421,43 +469,13 @@ public class GUIProfileView extends javax.swing.JFrame implements ProfileView{
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonNewPubliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNewPubliActionPerformed
-        // TODO add your handling code here:
+        //Mostra un panel que pide o texto da nova publicacion
+        String publicationText = JOptionPane.showInputDialog(rootPane, "Introduce el texto de la publicación");
+        profileController.newPost(publicationText, profileController.getSessionProfile());
+        
+        refreshPosts(profileController.getSessionProfile());
     }//GEN-LAST:event_jButtonNewPubliActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(GUIProfileView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(GUIProfileView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(GUIProfileView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(GUIProfileView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new GUIProfileView().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAcceptFriend;
@@ -476,14 +494,14 @@ public class GUIProfileView extends javax.swing.JFrame implements ProfileView{
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabelLastPublicationsText;
     private javax.swing.JLabel jLabelStatus;
     private javax.swing.JLabel jLabelUsername;
-    private javax.swing.JList<String> jList1;
+    private javax.swing.JList<String> jListFriendShipRequest;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -494,10 +512,10 @@ public class GUIProfileView extends javax.swing.JFrame implements ProfileView{
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
-    private javax.swing.JTable jTable3;
-    private javax.swing.JTable jTable4;
+    private javax.swing.JTable jTableComments;
+    private javax.swing.JTable jTableFriends;
+    private javax.swing.JTable jTablePosts;
+    private javax.swing.JTable jTablePrivateMessages;
     // End of variables declaration//GEN-END:variables
 
     @Override
@@ -507,7 +525,10 @@ public class GUIProfileView extends javax.swing.JFrame implements ProfileView{
 
     @Override
     public void showProfileMenu(Profile profile) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        setVisible(true);
+        jLabelUsername.setText(profile.getName()); //Nombre perfil usuario
+        jLabelStatus.setText(profile.getStatus()); //Estatus usuario
+
     }
 
     @Override
@@ -554,4 +575,22 @@ public class GUIProfileView extends javax.swing.JFrame implements ProfileView{
     public void showWriteErrorMessage() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-}
+    
+    private void refreshPosts(Profile profile) {
+        DefaultTableModel postModel = (DefaultTableModel) jTablePosts.getModel();
+        for(int i = 0; i < postModel.getRowCount(); i++) {
+            postModel.removeRow(i);
+        }
+        
+        for(Post post: profile.getPosts()) {
+            String likes = "";
+            if(jTablePosts.getRowCount() < postShowed) {
+                for (Profile profileLike : post.getProfileLikes()) {
+                    likes = likes.concat(profileLike.getName() + ", ");
+                }
+                
+            }
+                postModel.addRow(new Object[]{formatter.format(post.getDate()), post.getAuthor().getName(), post.getText(), likes});
+            }
+        }
+    }
