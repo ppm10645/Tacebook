@@ -12,8 +12,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import persistence.ProfileDB;
-import persistence.TacebookDB;
 
 /**
  *
@@ -66,11 +64,11 @@ public class GUItInitMenuView implements InitMenuView {
         switch (choice) {
             case 0 -> {
                 initMenuController.login(username.getText(), password.getText());
-                return false;
+                return true;
             }
             case 1 -> {
                 showRegisterMenu();
-                return false;
+                return true;
             }
             case 2 -> {
                 return true;

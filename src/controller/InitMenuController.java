@@ -34,7 +34,7 @@ public class InitMenuController {
         //Manten a aplicacion ata que devolva false
         while(!initMenuView.showLoginMenu());
     }
-
+    
     /**
      * Inicia session con un usuario existente
      * @param name nome de usuario

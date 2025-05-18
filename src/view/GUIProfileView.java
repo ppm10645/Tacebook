@@ -29,15 +29,12 @@ public class GUIProfileView extends javax.swing.JFrame implements ProfileView {
     public GUIProfileView(ProfileController profileController) {
         this.profileController = profileController;
         initComponents();
-        refreshPosts(profileController.getSessionProfile());
     }
 
     public void setPostShowed(int postShowed) {
         this.postShowed = postShowed;
     }
 
-    
-    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -94,16 +91,7 @@ public class GUIProfileView extends javax.swing.JFrame implements ProfileView {
 
         jTablePosts.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "Data", "Autor", "Texto", "Me gusta"
@@ -124,9 +112,11 @@ public class GUIProfileView extends javax.swing.JFrame implements ProfileView {
                 return canEdit [columnIndex];
             }
         });
+        jTablePosts.setColumnSelectionAllowed(true);
         jTablePosts.setShowGrid(false);
         jTablePosts.setShowHorizontalLines(true);
         jScrollPane1.setViewportView(jTablePosts);
+        jTablePosts.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 
         jButtonNewPubli.setText("Nova publicación");
         jButtonNewPubli.addActionListener(new java.awt.event.ActionListener() {
@@ -167,9 +157,11 @@ public class GUIProfileView extends javax.swing.JFrame implements ProfileView {
                 return canEdit [columnIndex];
             }
         });
+        jTableComments.setColumnSelectionAllowed(true);
         jTableComments.setShowGrid(false);
         jTableComments.setShowHorizontalLines(true);
         jScrollPane2.setViewportView(jTableComments);
+        jTableComments.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 
         jLabel5.setText("Comentarios:");
 
@@ -257,6 +249,11 @@ public class GUIProfileView extends javax.swing.JFrame implements ProfileView {
         jButtonBiografie.setText("Ver biografía");
 
         jButtonSendMessage.setText("Enviar mensaxe privada");
+        jButtonSendMessage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonSendMessageActionPerformed(evt);
+            }
+        });
 
         jLabel7.setText("Tes solicitudes de amizade dos seguintes perfis:");
 
@@ -272,6 +269,11 @@ public class GUIProfileView extends javax.swing.JFrame implements ProfileView {
         jButtonRejectFriend.setText("Rexeitar solicitude");
 
         jButtonNewFriendshiprequest.setText("Nova solicitude de amizade");
+        jButtonNewFriendshiprequest.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonNewFriendshiprequestActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -406,6 +408,11 @@ public class GUIProfileView extends javax.swing.JFrame implements ProfileView {
         jPanel1.add(jTabbedPane1, java.awt.BorderLayout.CENTER);
 
         jButtonCloseSesion.setText("Pechar sesión");
+        jButtonCloseSesion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonCloseSesionActionPerformed(evt);
+            }
+        });
         jPanel1.add(jButtonCloseSesion, java.awt.BorderLayout.PAGE_END);
 
         jLabel1.setText("Perfil do usuario :");
@@ -421,6 +428,11 @@ public class GUIProfileView extends javax.swing.JFrame implements ProfileView {
         jLabel3.setText("TACEBOOK");
 
         jButtonChangeStatus.setText("Cambiar estado");
+        jButtonChangeStatus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonChangeStatusActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -470,11 +482,35 @@ public class GUIProfileView extends javax.swing.JFrame implements ProfileView {
 
     private void jButtonNewPubliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNewPubliActionPerformed
         //Mostra un panel que pide o texto da nova publicacion
-        String publicationText = JOptionPane.showInputDialog(rootPane, "Introduce el texto de la publicación");
+        String publicationText = JOptionPane.showInputDialog(this, "Introduce el texto de la publicación");
         profileController.newPost(publicationText, profileController.getSessionProfile());
-        
+
         refreshPosts(profileController.getSessionProfile());
     }//GEN-LAST:event_jButtonNewPubliActionPerformed
+
+    private void jButtonCloseSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCloseSesionActionPerformed
+        dispose();
+
+    }//GEN-LAST:event_jButtonCloseSesionActionPerformed
+
+    private void jButtonChangeStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonChangeStatusActionPerformed
+        String newStatus = JOptionPane.showInputDialog("Estatus actual:");
+
+        profileController.getSessionProfile().setStatus(newStatus);
+        jLabelStatus.setText(profileController.getSessionProfile().getStatus());
+    }//GEN-LAST:event_jButtonChangeStatusActionPerformed
+
+    private void jButtonNewFriendshiprequestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNewFriendshiprequestActionPerformed
+        String profileName = JOptionPane.showInputDialog("Nome do amigo ao que queres enviar solicitude de amizade");
+
+        profileController.newFriendshipRequest(profileName);
+    }//GEN-LAST:event_jButtonNewFriendshiprequestActionPerformed
+
+    private void jButtonSendMessageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSendMessageActionPerformed
+        String texto = JOptionPane.showInputDialog("Nome do amigo ao que queres enviar solicitude de amizade");
+        Profile perfildestino = profileController.getShownProfile();
+        profileController.newMessage(perfildestino, texto);
+    }//GEN-LAST:event_jButtonSendMessageActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -528,7 +564,7 @@ public class GUIProfileView extends javax.swing.JFrame implements ProfileView {
         setVisible(true);
         jLabelUsername.setText(profile.getName()); //Nombre perfil usuario
         jLabelStatus.setText(profile.getStatus()); //Estatus usuario
-
+        refreshPosts(profile);
     }
 
     @Override
@@ -575,22 +611,22 @@ public class GUIProfileView extends javax.swing.JFrame implements ProfileView {
     public void showWriteErrorMessage() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-    
+
     private void refreshPosts(Profile profile) {
         DefaultTableModel postModel = (DefaultTableModel) jTablePosts.getModel();
-        for(int i = 0; i < postModel.getRowCount(); i++) {
+        for (int i = 0; i < postModel.getRowCount(); i++) {
             postModel.removeRow(i);
         }
-        
-        for(Post post: profile.getPosts()) {
+
+        for (Post post : profile.getPosts()) {
             String likes = "";
-            if(jTablePosts.getRowCount() < postShowed) {
+            if (jTablePosts.getRowCount() < postShowed) {
                 for (Profile profileLike : post.getProfileLikes()) {
                     likes = likes.concat(profileLike.getName() + ", ");
                 }
-                
-            }
+
                 postModel.addRow(new Object[]{formatter.format(post.getDate()), post.getAuthor().getName(), post.getText(), likes});
             }
         }
     }
+}
