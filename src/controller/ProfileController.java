@@ -4,6 +4,8 @@
  */
 package controller;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.Comment;
 import model.Message;
 import model.Post;
@@ -109,8 +111,16 @@ public class ProfileController {
      * Mostra o menu do perfil
      */
     public void reloadProfile() {
-        // Precisamente neste método "reloadProfile" cambiaremos o código para que en lugar de almacenar o perfil no atributo
-        // "sessionProfile" o garde no atributo "shownProfile", e sexa ese atributo o que se lle pase ao obxecto da vista
+        try {
+            // Precisamente neste método "reloadProfile" cambiaremos o código para que en lugar de almacenar o perfil no atributo
+            // "sessionProfile" o garde no atributo "shownProfile", e sexa ese atributo o que se lle pase ao obxecto da vista
+            shownProfile = ProfileDB.findByName(sessionProfile.getName(),
+                    0);
+            profileView.showProfileMenu(shownProfile);
+        } catch (PersistenceException ex) {
+            profileView.showReadErrorMessage();
+        }
+        
     }
 
     /**

@@ -484,8 +484,7 @@ public class GUIProfileView extends javax.swing.JFrame implements ProfileView {
         //Mostra un panel que pide o texto da nova publicacion
         String publicationText = JOptionPane.showInputDialog(this, "Introduce el texto de la publicación");
         profileController.newPost(publicationText, profileController.getSessionProfile());
-
-        refreshPosts(profileController.getSessionProfile());
+        // refreshPosts(profileController.getSessionProfile());
     }//GEN-LAST:event_jButtonNewPubliActionPerformed
 
     private void jButtonCloseSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCloseSesionActionPerformed
